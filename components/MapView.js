@@ -8,7 +8,6 @@ export default class MapView extends Component {
     return (
       <NavigationBar {...this.props}>
         <Text>Map</Text>
-        <Text>己立立人，己达达人</Text>
       </NavigationBar>
     )
   }

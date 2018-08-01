@@ -8,6 +8,10 @@ import NavigationBar from './components/NavigationBar';
 import MapView from './components/MapView';
 import Schedule from './components/Schedule';
 import TourRoutes from './components/TourRoutes';
+import About from './components/About';
+import CCA from './components/CCA';
+import Curriculum from './components/Curriculum';
+import FAQs from './components/FAQs';
 
 class HomeScreen extends React.Component {
   generateButtonGrid(buttons) {
@@ -60,16 +64,23 @@ class HomeScreen extends React.Component {
 }
 
 
-const RootStack = createDrawerNavigator({
+const RootDrawer = createDrawerNavigator({
   Home: HomeScreen,
   Map: MapView,
   Schedule: Schedule,
-  "Tour Routes": TourRoutes
+  "Tour Routes": TourRoutes,
+  About: About,
+  Curriculum: Curriculum,
+  CCA: CCA,
+  FAQs: FAQs,
+},
+{
+  initialRouteName: 'Curriculum'
 });
 
 export default class App extends React.Component {
   render() {
-    return <RootStack />;
+    return <RootDrawer />;
   }
 }
 

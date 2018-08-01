@@ -13,11 +13,11 @@ export default class NavigationBar extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>Home</Title>
+            <Title>{this.props.navigation.state.routeName}</Title>
           </Body>
           <Right />
         </Header>
-        <Content style={{padding: 12}}>
+        <Content>
           {this.props.children}
         </Content>
       </Container>
