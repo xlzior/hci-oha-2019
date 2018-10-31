@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, List, ListItem, Left, Right, Icon } from 'native-base';
+import { Text, List, ListItem, Left, Right, Icon, View } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
@@ -45,10 +45,12 @@ class Subject extends Component {
 
   render() {
     const {getParam} = this.props.navigation;
-    let subjectName = getParam('subjectName', 'Economics');
+    let subjectName = getParam('subjectName', 'Subject Name');
     console.log('subjectName: ', subjectName);
     return (
-      <Text>{subjectName} is a very fun subject which HCI offers.</Text>
+      <View style={{margin:10}}>
+        <Text>{subjectName} is a very fun subject which HCI offers.</Text>
+      </View>
     )
   }
 }
