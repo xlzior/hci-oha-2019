@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, AsyncStorage } from 'react-native';
 import { Text, H1, H2, Button, View } from 'native-base';
 import { createDrawerNavigator } from 'react-navigation';
 
@@ -13,23 +13,58 @@ import CCA from './components/CCA';
 import Curriculum from './components/Curriculum';
 import FAQs from './components/FAQs';
 
+// Firebase
+import * as firebase from "firebase";
+const firebaseConfig = {
+  apiKey: "AIzaSyBCQvgICC-zwInatiHgbPmOGkvs91l3A8o",
+  authDomain: "hci-oha-2019.firebaseapp.com",
+  databaseURL: "https://hci-oha-2019.firebaseio.com/",
+  storageBucket: "hci-oha-2019.appspot.com",
+};
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+
+
 class HomeScreen extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      fontLoaded: false
+      fontLoaded: false,
+      dataLoaded:false,
+      last_update: ""
     }
+    this.datastoreRef = firebaseApp.database().ref();
+  }
+
+  listenForItems(datastoreRef) {
+    datastoreRef.once("value", datastore => {
+      datastore.forEach(element => {
+        global.data[element.key] = element.val();
+        //this.storeAsync(element.key, element.val());
+      });
+
+      let last_update = JSON.stringify(new Date().toISOString());
+      this.setState({last_update})
+      AsyncStorage.setItem("last_update", last_update);
+    });
+  }
+
+  async loadData(){
+    global.data = {};
+    this.listenForItems(this.datastoreRef);
   }
 
   async componentDidMount() {
 	  Expo.Font.loadAsync({
 		'Roboto':require('native-base/Fonts/Roboto.ttf'),
 		'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
-	})
-	.then(() => this.setState({ fontLoaded: true}))
-	.catch(() => this.setState({ fontLoaded: true}));
-	  
+    })
+    .then(() => this.setState({ fontLoaded: true}))
+    .catch(() => this.setState({ fontLoaded: true}));
+	  this.loadData()
+    .then(() => this.setState({ dataLoaded: true}))
+    .catch(() => this.setState({ dataLoaded: true}));
   }
 
   generateButtonGrid(buttons) {
@@ -57,11 +92,10 @@ class HomeScreen extends React.Component {
     )
   }
   render() {
-    let {fontLoaded} = this.state;
-    if (!fontLoaded) return <View style={styles.center}><Text>Loading...</Text></View>
-    let ohaDisplay = this.generateButtonGrid(['Schedule', 'Map', 'Tour Routes', 'Redemption'])
-    let hciDisplay = this.generateButtonGrid(['About', 'Curriculum', 'CCAs', 'FAQs'])
-
+    let {fontLoaded, dataLoaded, last_update} = this.state;
+    if (!fontLoaded || !dataLoaded) return <View style={styles.center}><Text>Loading...</Text></View>
+    let ohaDisplay = this.generateButtonGrid(['Schedule', 'Map', 'Tour Routes', 'Redemption']);
+    let hciDisplay = this.generateButtonGrid(['About', 'Curriculum', 'CCAs', 'FAQs']);
     return (
       <NavigationBar {...this.props}>
         <View style={styles.mainContainer}>
