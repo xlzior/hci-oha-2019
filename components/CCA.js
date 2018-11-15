@@ -61,6 +61,11 @@ class CCAType extends Component {
     let description = getParam('description', 'A cca that exists somewhere');
     let boothLocation = getParam('boothLocation', 'Somewhere over the rainbow');
     let photo = getParam('photo', 'fOto');
+    description = description.split("     ");
+    paragraphs = [];
+    for(let index in description){
+      paragraphs.push(<Text style={{marginBottom:20}}>{description[index]}</Text>);
+    }
     return (
       <ScrollView style={{padding:20}}>
         <View style={{marginBottom: 100}}>
@@ -71,7 +76,7 @@ class CCAType extends Component {
           <Text style={styles.title}>Booth Location:</Text>
           <Text>{boothLocation}</Text>
           <Text style={styles.title}>Description:</Text>
-          <Text>{description}</Text>
+          {paragraphs}
         </View>
       </ScrollView>
     )
