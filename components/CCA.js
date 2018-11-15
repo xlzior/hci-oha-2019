@@ -1,33 +1,44 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image, ScrollView, View } from 'react-native';
-import { Text, List, ListItem, Left, Right, Icon } from 'native-base';
+import { Text, H1, H2, List, ListItem, Left, Right, Icon } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
 
 class ListView extends Component {
   render() {
-    let listitems = [];
-    for(let sport in global.data["CCA"]){
+    let sportsccas = [];
+    let clubs = [];
+    let vnas = [];
+    let councils = [];
+    for(let cca in global.data["CCA"]){
       display = 
         <ListItem
-          key={global.data["CCA"][sport]["Name"]}
+          key={global.data["CCA"][cca]["Name"]}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'CCAType',
-            params: { ccaName: global.data["CCA"][sport]["Name"],
-            boothLocation: global.data["CCA"][sport]["BoothLocation"],
-            description: global.data["CCA"][sport]["Description"],
-            photo: global.data["CCA"][sport]["Photo"] }
+            params: { ccaName: global.data["CCA"][cca]["Name"],
+            boothLocation: global.data["CCA"][cca]["BoothLocation"],
+            description: global.data["CCA"][cca]["Description"],
+            photo: global.data["CCA"][cca]["Photo"] }
           })}
         >
           <Left>
-            <Text>{global.data["CCA"][sport]["Name"]}</Text>
+            <Text>{global.data["CCA"][cca]["Name"]}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />
           </Right>
         </ListItem>;
-        listitems.push(display);
+        if(cca.startsWith("Sports-")){
+          sportsccas.push(display);
+        }else if(cca.startsWith("Club-")){
+          clubs.push(display);
+        }else if(cca.startsWith("VNA-")){
+          vnas.push(display);
+        }else if(cca.startsWith("Council-")){
+          councils.push(display);
+        }
     }
    
     
@@ -35,9 +46,21 @@ class ListView extends Component {
       <NavigationBar {...this.props}>
         <List>
           <ListItem itemDivider>
+            <Text>Councils</Text>
+          </ListItem>
+          {councils}
+          <ListItem itemDivider>
             <Text>Sports CCAs</Text>
           </ListItem>
-          {listitems}
+          {sportsccas}
+          <ListItem itemDivider>
+            <Text>Visual and Performing Arts</Text>
+          </ListItem>
+          {vnas}
+          <ListItem itemDivider>
+            <Text>Clubs and Societies</Text>
+          </ListItem>
+          {clubs}
         </List>
       </NavigationBar>
     )
@@ -61,10 +84,10 @@ class CCAType extends Component {
     let description = getParam('description', 'A cca that exists somewhere');
     let boothLocation = getParam('boothLocation', 'Somewhere over the rainbow');
     let photo = getParam('photo', 'fOto');
-    description = description.split("     ");
+    description = description.split("\\n");
     paragraphs = [];
-    for(let index in description){
-      paragraphs.push(<Text style={{marginBottom:20}}>{description[index]}</Text>);
+    for(let i=0;i<description.length;i++){
+      paragraphs.push(<Text key={i.toString()}>{description[i]}</Text>);
     }
     return (
       <ScrollView style={{padding:20}}>
@@ -73,9 +96,9 @@ class CCAType extends Component {
             style={{flex:1, height:150, marginBottom:10}}
             source={{uri: photo}}
           />
-          <Text style={styles.title}>Booth Location:</Text>
+          <H2 style={styles.title}>Booth Location:</H2>
           <Text>{boothLocation}</Text>
-          <Text style={styles.title}>Description:</Text>
+          <H2 style={styles.title}>Description:</H2>
           {paragraphs}
         </View>
       </ScrollView>
