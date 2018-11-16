@@ -11,7 +11,6 @@ class ListView extends Component {
     let clubs = [];
     let vnas = [];
     let councils = [];
-    console.log("LOGGING THE THING YOU ASKED TO LOG: ");
     const data = this.props.screenProps;
     for(let cca in data["CCA"]){
       display = (

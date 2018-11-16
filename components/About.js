@@ -30,8 +30,10 @@ export default class About extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    padding: 15,
+    padding: 20,
     marginTop: 5,
-    marginBottom: 10
+    marginBottom: 10,
+    marginLeft: 10,
+    marginRight: 10
   }
 })
