@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, ScrollView, View } from 'react-native';
-import { Text, H1, H2, List, ListItem, Left, Right, Icon } from 'native-base';
+import { StyleSheet, Image, ScrollView } from 'react-native';
+import { Content, View, Text, H1, H2, List, ListItem, Left, Right, Icon } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
@@ -11,8 +11,9 @@ class ListView extends Component {
     let clubs = [];
     let vnas = [];
     let councils = [];
+
     for(let cca in global.data["CCA"]){
-      display = 
+      display = (
         <ListItem
           key={global.data["CCA"][cca]["Name"]}
           button onPress={() => this.props.navigation.navigate({
@@ -29,18 +30,19 @@ class ListView extends Component {
           <Right>
             <Icon name="arrow-forward" />
           </Right>
-        </ListItem>;
-        if(cca.startsWith("Sports-")){
-          sportsccas.push(display);
-        }else if(cca.startsWith("Club-")){
-          clubs.push(display);
-        }else if(cca.startsWith("VNA-")){
-          vnas.push(display);
-        }else if(cca.startsWith("Council-")){
-          councils.push(display);
-        }
+        </ListItem>
+      );
+
+      if (cca.startsWith("Sports-")){
+        sportsccas.push(display);
+      } else if(cca.startsWith("Club-")){
+        clubs.push(display);
+      } else if(cca.startsWith("VNA-")){
+        vnas.push(display);
+      } else if(cca.startsWith("Council-")){
+        councils.push(display);
+      }
     }
-   
     
     return (
       <NavigationBar {...this.props}>
@@ -84,13 +86,9 @@ class CCAType extends Component {
     let description = getParam('description', 'A cca that exists somewhere');
     let boothLocation = getParam('boothLocation', 'Somewhere over the rainbow');
     let photo = getParam('photo', 'fOto');
-    description = description.split("\\n");
-    paragraphs = [];
-    for(let i=0;i<description.length;i++){
-      paragraphs.push(<Text key={i.toString()}>{description[i]}</Text>);
-    }
+
     return (
-      <ScrollView style={{padding:20}}>
+      <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
           <Image
             style={{flex:1, height:150, marginBottom:10}}
@@ -99,9 +97,9 @@ class CCAType extends Component {
           <H2 style={styles.title}>Booth Location:</H2>
           <Text>{boothLocation}</Text>
           <H2 style={styles.title}>Description:</H2>
-          {paragraphs}
+          <Text>{description}</Text>
         </View>
-      </ScrollView>
+      </Content>
     )
   }
 }
