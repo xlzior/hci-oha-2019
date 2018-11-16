@@ -11,21 +11,22 @@ class ListView extends Component {
     let clubs = [];
     let vnas = [];
     let councils = [];
-
-    for(let cca in global.data["CCA"]){
+    console.log("LOGGING THE THING YOU ASKED TO LOG: ");
+    const data = this.props.screenProps;
+    for(let cca in data["CCA"]){
       display = (
         <ListItem
-          key={global.data["CCA"][cca]["Name"]}
+          key={data["CCA"][cca]["Name"]}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'CCAType',
-            params: { ccaName: global.data["CCA"][cca]["Name"],
-            boothLocation: global.data["CCA"][cca]["BoothLocation"],
-            description: global.data["CCA"][cca]["Description"],
-            photo: global.data["CCA"][cca]["Photo"] }
+            params: { ccaName: data["CCA"][cca]["Name"],
+            boothLocation: data["CCA"][cca]["BoothLocation"],
+            description: data["CCA"][cca]["Description"],
+            photo: data["CCA"][cca]["Photo"] }
           })}
         >
           <Left>
-            <Text>{global.data["CCA"][cca]["Name"]}</Text>
+            <Text>{data["CCA"][cca]["Name"]}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />

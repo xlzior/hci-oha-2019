@@ -31,7 +31,7 @@ class HomeScreen extends React.Component {
       <Button light
         key={route}
         style={styles.button}
-        onPress={() => this.props.navigation.navigate(route)}
+        onPress={() => this.props.navigation.navigate(route, {test: "Moooo"})}
       >
         <Text>{route == 'About' ? 'About Hwa Chong' : route}</Text>
       </Button>
@@ -60,6 +60,7 @@ class HomeScreen extends React.Component {
   }
 
   render() {
+    console.log(this.props.navigation.state);
     return (
       <NavigationBar {...this.props}>
         <View style={styles.mainContainer}>
@@ -108,26 +109,27 @@ export default class App extends React.Component {
     this.state = {
       fontLoaded: false,
       dataLoaded: false,
+      data: {},
       last_update: ""
     }
     this.datastoreRef = firebaseApp.database().ref();
   }
 
   listenForItems(datastoreRef) {
+    let data = {};
     datastoreRef.once("value", datastore => {
       datastore.forEach(element => {
-        global.data[element.key] = element.val();
+        data[element.key] = element.val();
         //this.storeAsync(element.key, element.val());
       });
 
       let last_update = JSON.stringify(new Date().toISOString());
-      this.setState({last_update})
+      this.setState({data, last_update})
       AsyncStorage.setItem("last_update", last_update);
     });
   }
 
   async loadData(){
-    global.data = {};
     this.listenForItems(this.datastoreRef);
   }
 
@@ -147,7 +149,7 @@ export default class App extends React.Component {
   render() {
     let {fontLoaded, dataLoaded} = this.state;
     if (!fontLoaded || !dataLoaded) return <View style={styles.center}><Text>Loading...</Text></View>
-    return <RootDrawer />;
+    return <RootDrawer screenProps={data=this.state.data}/>;
   }
 }
 
