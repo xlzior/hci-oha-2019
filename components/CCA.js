@@ -84,30 +84,44 @@ class CCAType extends Component {
     const {getParam} = this.props.navigation;
     let ccaName = getParam('ccaName', 'CCA Name');
     let description = getParam('description', 'A cca that exists somewhere');
+    description = this.formatParagraph(description);
     let boothLocation = getParam('boothLocation', 'Somewhere over the rainbow');
     let photo = getParam('photo', 'fOto');
+    let image;
+    if(photo != 'none'){
+      image = <Image
+        style={{flex:1, height:150, marginBottom:10}}
+        source={{uri: photo}}
+      />
+    }
 
     return (
       <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
-          <Image
-            style={{flex:1, height:150, marginBottom:10}}
-            source={{uri: photo}}
-          />
-          <H2 style={styles.title}>Booth Location:</H2>
-          <Text>{boothLocation}</Text>
-          <H2 style={styles.title}>Description:</H2>
+          {image}
+          <H2 style={styles.title}>Booth Location</H2>
+          <Text style={{marginBottom: 15}}>{boothLocation}</Text>
+          <H2 style={styles.title}>Description</H2>
           <Text>{description}</Text>
         </View>
       </Content>
-    )
+    );
+    
+  }
+  
+  formatParagraph(paragraph) {
+    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
+    // and double all line spacing.
+    return paragraph.split('\\\\n').join('\n')
+    .split('\n\n').join('\n')
+    .split('\n').join('\n\n');
   }
 }
 
 const styles = StyleSheet.create({
   title: {
     marginBottom: 10,
-    marginTop: 10,
+    marginTop: 20,
     fontWeight: 'bold'
   }
 })

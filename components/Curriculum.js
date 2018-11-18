@@ -70,18 +70,29 @@ class Subject extends Component {
     let subjectName = getParam('subjectName', 'Subject Name');
     let contact = getParam('contact', 'wangdk@hci.edu.sg');
     let description = getParam('description', 'fun subject worth taking');
+    description = this.formatParagraph(description);
     return (
       <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
-          <H2 style={styles.title}>Contact:</H2>
-          <Text>{contact}</Text>
-          <H2 style={styles.title}>Description:</H2>
+          <H2 style={styles.title}>Contact</H2>
+          <Text style={{marginBottom: 15}}>{contact}</Text>
+          <H2 style={styles.title}>Description</H2>
           <Text>{description}</Text>
         </View>
       </Content>
     )
   }
+
+  formatParagraph(paragraph) {
+    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
+    // and double all line spacing.
+    return paragraph.split('\\\\n').join('\n')
+    .split('\n\n').join('\n')
+    .split('\n').join('\n\n');
+  }
 }
+
+
 
 const styles = StyleSheet.create({
   title: {
