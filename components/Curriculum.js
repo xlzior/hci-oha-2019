@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
-import { Content, Text, H1, H2, List, ListItem, Left, Right, Icon, View } from 'native-base';
+import { Content, Text, H1, H2, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
 
 class ListView extends Component {
+  state = {
+    searchTerm: ""
+  }
+
+  isSearched(name){
+    let search = this.state.searchTerm.toLowerCase();
+    //Search bar empty
+    if(search == "")
+      return true;
+
+    if(name.toLowerCase().includes(search))
+      return true;
+  }
+
   render() {
     let humanities = [];
     let sciences = [];
@@ -32,15 +46,30 @@ class ListView extends Component {
           </Right>
         </ListItem>
       );
-      if(subject.startsWith("Humanities-")){
-        humanities.push(display);
-      }else if(subject.startsWith("Sciences-")){
-        sciences.push(display);
+      if(this.isSearched(data["Curriculum"][subject]["Name"])){
+        if(subject.startsWith("Humanities-")){
+          humanities.push(display);
+        }else if(subject.startsWith("Sciences-")){
+          sciences.push(display);
+        }
       }
     }
 
     return (
       <NavigationBar {...this.props}>
+        <Form>
+          <Item>
+            <Input
+              onChangeText={searchTerm => {
+                this.setState({searchTerm});
+              }}
+              value={this.state.searchTerm}
+              placeholder="Search"
+              returnKeyType="search"
+              clearButtonMode="always"
+            />
+          </Item>
+        </Form>
         <List>
           <ListItem itemDivider>
             <Text>Sciences</Text>
@@ -86,9 +115,7 @@ class Subject extends Component {
   formatParagraph(paragraph) {
     //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
     // and double all line spacing.
-    return paragraph.split('\\\\n').join('\n')
-    .split('\n\n').join('\n')
-    .split('\n').join('\n\n');
+    return paragraph.split('\n').join('\n\n');
   }
 }
 

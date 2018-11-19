@@ -7,74 +7,54 @@ export default class Schedule extends Component {
   state = {
     searchTerm: ""
   }
+
+  isSearched(name,location,time){
+    let search = this.state.searchTerm.toLowerCase();
+    if(search == "")
+      return true;
+    if(name.toLowerCase().includes(search)||
+    location.toLowerCase().includes(search)||
+    String(time).includes(search))
+      return true;
+  }
+
   render() {
-    //Dictionary of time to a list of displays of events occuring. 
-    //time: [list of displays for events happening in that time]
-    //2 months later and I'll come back here and wonder what this is.
-    let events = {};
-    let timeslots = [];
+    let academic = [];
+    let performances = [];
     const data = this.props.screenProps["Schedule"];
 
-    for(let faq in data){
-      let time = data[faq]["Time"];
-      let name = data[faq]["Name"];
-      let location = data[faq]["Location"];
-
-      //Render the event only if the searchterm is in the name, or if there is no searchTerm.
-      //TODO: CURRENTLY BUGGY. COMPONENT RE-RENDERING IS NOT COMPLETELY DONE, 
-      //AND SOME NON-RELATED CONTENT IS STILL DISPLAYED REGARDLESS OF SEARCHBOX CONTENT.
-      if(name.includes(this.state.searchTerm) || this.state.searchTerm == ""){
-        let display = (
-          <ListItem
-            key={{name} + {time} + {location}}>
-            <Body>
-              <Text>{name}</Text>
-              <Text note>{time} at {location}</Text>
-            </Body>
-          </ListItem>);
-  
-        let timeslotevents = [];
-  
-        //Use an existng list of events if the timeslot is inside events.
-        if(time in events){
-          timeslotevents = events[time];
-          delete events[time];
+    for(let event in data){
+      let time = data[event]["Time"];
+      let name = data[event]["Name"];
+      let location = data[event]["Location"];
+      let display = (
+        <ListItem
+          key={event}>
+          <Body>
+            <Text>{name}</Text>
+            <Text note>{time} at {location}</Text>
+          </Body>
+        </ListItem>
+      );
+      if(this.isSearched(name,location,time)){
+        if(event.startsWith("Performance-")){
+          performances.push(display);
         }else{
-          //Add the timeslot to timeslots if the timeslot isn't inside.
-          timeslots.push(time);
+          academic.push(display);
         }
-        timeslotevents.push(display);
-        events[time] = timeslotevents;
       }
 
     }
 
-    //Sort timeslots (by string)
-    timeslots.sort();
-    let displaylist = [];
-    //Add to displaylist according to sorted format
-    for(let index in timeslots){
-      time = timeslots[index];
-      //Timeslot header
-      let listitems = [];
-      listitems.push(
-      <ListItem itemDivider
-        key = {time}>
-        <Text>{time}</Text>
-      </ListItem>);
-      //Add all events associated to the timeslot
-      listitems.push(events[time]);
-
-      //Add the final listitems to displaylist
-      displaylist.push(listitems);
-    }
 
     return (
       <NavigationBar {...this.props}>
         <Form>
           <Item>
             <Input
-              onChangeText={searchTerm => this.setState({searchTerm})}
+              onChangeText={searchTerm => {
+                this.setState({searchTerm});
+              }}
               value={this.state.searchTerm}
               placeholder="Search"
               returnKeyType="search"
@@ -83,7 +63,14 @@ export default class Schedule extends Component {
           </Item>
         </Form>
         <List>
-          {displaylist}
+          <ListItem itemDivider>
+            <Text>Performances</Text>
+          </ListItem>
+          {performances}
+          <ListItem itemDivider>
+            <Text>Academic Talks</Text>
+          </ListItem>
+          {academic}
         </List>
       </NavigationBar>
     )
