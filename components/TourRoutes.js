@@ -1,8 +1,151 @@
 import React, { Component } from 'react';
-import { Text } from 'native-base';
+import { StyleSheet, Image } from 'react-native';
+import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
+import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
 
+class ListView extends Component {
+  state = {
+    searchTerm: ""
+  }
+
+  isSearched(name){
+    let search = this.state.searchTerm.toLowerCase();
+    //Search bar empty, show all list items
+    if(search == "") return true;
+
+    if(name.toLowerCase().includes(search)) return true;
+  }
+
+  render() {
+    const data = this.props.screenProps["TourRoutes"];
+    let routes = {};
+    for (let location in data) {
+      let details = data[location];
+      let route = location.split("-")[0];
+      if (!routes.hasOwnProperty(route)) routes[route] = [];
+
+      let display = (
+        <ListItem
+          key={details["Name"]}
+          button onPress={() => this.props.navigation.navigate({
+            routeName: 'Location',
+            params: { locationName: details["Name"],
+            description: details["Description"],
+            photo: details["Photo"] }
+          })}
+        >
+          <Left>
+            <Text>{details["Name"]}</Text>
+          </Left>
+          <Right>
+            <Icon name="arrow-forward" />
+          </Right>
+        </ListItem>
+      );
+
+      if(this.isSearched(details["Name"])){
+        routes[route].push(display)
+      }
+    }
+    let listDisplay = [];
+    for (let route in routes) {
+
+      listDisplay.push(
+        <ListItem itemDivider key={route}>
+          <Text>{route}</Text>
+        </ListItem>
+      )
+      listDisplay.push(routes[route])
+    }
+
+    return (
+      <NavigationBar {...this.props}>
+      <Form>
+        <Item>
+          <Input
+            onChangeText={searchTerm => {
+              this.setState({searchTerm});
+            }}
+            value={this.state.searchTerm}
+            placeholder="Search"
+            returnKeyType="search"
+            clearButtonMode="always"
+          />
+        </Item>
+      </Form>
+        <List>
+          {listDisplay}
+        </List>
+      </NavigationBar>
+    )
+  }
+}
+
+
+class Location extends Component {
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.getParam('locationName', 'Location Name'),
+      description: navigation.getParam('description', 'a location in Hwa Chong'),
+      photo: navigation.getParam('photo', 'fOto')
+    };
+  };
+
+  render() {
+    const {getParam} = this.props.navigation;
+    let locationName = getParam('locationName', 'Location Name');
+    let description = getParam('description', 'a location in Hwa Chong');
+    description = this.formatParagraph(description);
+    let photo = getParam('photo', 'fOto');
+    let image;
+    if(photo != 'none'){
+      image = <Image
+        style={{flex:1, height:150, marginBottom:10}}
+        source={{uri: photo}}
+      />
+    }
+
+    return (
+      <Content style={{padding:20}}>
+        <View style={{marginBottom: 100}}>
+          {image}
+          <H2 style={styles.title}>Description</H2>
+          <Text>{description}</Text>
+        </View>
+      </Content>
+    );
+    
+  }
+  
+  formatParagraph(paragraph) {
+    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
+    // and double all line spacing.
+    return paragraph.split('\n').join('\n\n');
+  }
+}
+
+const styles = StyleSheet.create({
+  title: {
+    marginBottom: 10,
+    marginTop: 20,
+    fontWeight: 'bold'
+  }
+})
+
+export default createStackNavigator({
+  "Tour Routes": {
+    screen: ListView,
+    navigationOptions: ({
+      header: null
+    })
+  },
+  Location: Location,
+});
+
+// old geolocation stuffs
+/*
 export default class TourRoutes extends Component {
   state = {
     latitude: -1,
@@ -33,13 +176,10 @@ export default class TourRoutes extends Component {
     options);
   }
   render() {
-    this.updateLocation();
     return (
       <NavigationBar {...this.props}>
-        <Text>Tour Routes</Text>
-        <Text> Geolocation running </Text>
-        <Text>Latitude: {this.state.latitude}; Longitude: {this.state.longitude}</Text>
       </NavigationBar>
     )
   }
 }
+/* */
