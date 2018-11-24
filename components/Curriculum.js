@@ -23,30 +23,31 @@ class ListView extends Component {
   render() {
     let humanities = [];
     let sciences = [];
-    const data = this.props.screenProps;
+    const data = this.props.screenProps["Curriculum"];
     //Todo: Make categories and format the stuff.
-    for(let subject in data["Curriculum"]){
+    for(let subject in data){
+      let details = data[subject];
       display = (
         <ListItem
-          key={data["Curriculum"][subject]["Name"]}
+          key={details["Name"]}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'Subject',
             params: { 
-              subjectName: data["Curriculum"][subject]["Name"],
-              contact: data["Curriculum"][subject]["Contact"],
-              description: data["Curriculum"][subject]["Description"]
+              subjectName: details["Name"],
+              contact: details["Contact"],
+              description: details["Description"]
             }
           })}
         >
           <Left>
-            <Text>{data["Curriculum"][subject]["Name"]}</Text>
+            <Text>{details["Name"]}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />
           </Right>
         </ListItem>
       );
-      if(this.isSearched(data["Curriculum"][subject]["Name"])){
+      if(this.isSearched(details["Name"])){
         if(subject.startsWith("Humanities-")){
           humanities.push(display);
         }else if(subject.startsWith("Sciences-")){

@@ -1,5 +1,9 @@
 {
   "expo": {
-    "sdkVersion": "27.0.0"
+    "sdkVersion": "27.0.0",
+    "name": "hci-oha-2019",
+    "slug": "hci-oha-2019",
+    "version": "0.1.0",
+    "description": ""
   }
 }

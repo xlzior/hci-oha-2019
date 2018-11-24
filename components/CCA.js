@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, ScrollView } from 'react-native';
-import { Content, View, Text, H1, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
+import { StyleSheet, Image } from 'react-native';
+import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 
 import NavigationBar from './NavigationBar';
@@ -24,21 +24,22 @@ class ListView extends Component {
     let clubs = [];
     let vnas = [];
     let councils = [];
-    const data = this.props.screenProps;
-    for(let cca in data["CCA"]){
+    const data = this.props.screenProps["CCA"];
+    for(let cca in data){
+      let details = data[cca];
       display = (
         <ListItem
-          key={data["CCA"][cca]["Name"]}
+          key={details["Name"]}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'CCAType',
-            params: { ccaName: data["CCA"][cca]["Name"],
-            boothLocation: data["CCA"][cca]["BoothLocation"],
-            description: data["CCA"][cca]["Description"],
-            photo: data["CCA"][cca]["Photo"] }
+            params: { ccaName: details["Name"],
+            boothLocation: details["BoothLocation"],
+            description: details["Description"],
+            photo: details["Photo"] }
           })}
         >
           <Left>
-            <Text>{data["CCA"][cca]["Name"]}</Text>
+            <Text>{details["Name"]}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />
@@ -46,7 +47,7 @@ class ListView extends Component {
         </ListItem>
       );
 
-      if(this.isSearched(data["CCA"][cca]["Name"])){
+      if(this.isSearched(details["Name"])){
         if (cca.startsWith("Sports-")){
           sportsccas.push(display);
         } else if(cca.startsWith("Club-")){

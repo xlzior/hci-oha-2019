@@ -24,9 +24,10 @@ export default class Schedule extends Component {
     const data = this.props.screenProps["Schedule"];
 
     for(let event in data){
-      let time = data[event]["Time"];
-      let name = data[event]["Name"];
-      let location = data[event]["Location"];
+      let details = data[event];
+      let time = details["Time"];
+      let name = details["Name"];
+      let location = details["Location"];
       let display = (
         <ListItem
           key={event}>
