@@ -13,16 +13,16 @@ export default class MapViewContainer extends Component {
         <MapView
           style={{flex: 1, height: height-50}}
           initialRegion={{
-            latitude: 1.327139, 
-            longitude: 103.804468,
-            latitudeDelta: 0.021,
-            longitudeDelta: 0.008
+            latitude: 1.325307, 
+            longitude: 103.806137,
+            latitudeDelta: 0.00005,
+            longitudeDelta: 0.006327
           }}
           showsUserLocation={true}
         >
         <Overlay
-          image={{uri: "https://static.wixstatic.com/media/89ebb0_69ec8ee9e22d477aaadfcf8a8c6ab779~mv2_d_4266_3200_s_4_2.png"}}
-          bounds={[[1.329238,103.800667], [1.323872, 103.806640]]}
+          image={require('./../images/oha_map.png')}
+          bounds={[[1.326952, 103.804467], [1.323702, 103.808029]]}
         />
         </MapView>
       </NavigationBar>
@@ -30,4 +30,4 @@ export default class MapViewContainer extends Component {
   }
 }
 
-// bounds={[[1.329238,103.800667], [1.323872, 103.806640]]}
+// bounds={[[1.326952, 103.804467], [1.323702, 103.808029]]}
