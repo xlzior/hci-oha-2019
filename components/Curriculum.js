@@ -23,8 +23,10 @@ class ListView extends Component {
   render() {
     let humanities = [];
     let sciences = [];
+
     const data = this.props.screenProps["Curriculum"];
-    //Todo: Make categories and format the stuff.
+    
+    //Render each subject from data obtained from firebase
     for(let subject in data){
       let details = data[subject];
       display = (
@@ -47,6 +49,9 @@ class ListView extends Component {
           </Right>
         </ListItem>
       );
+
+      //Arrange the element under the right section, and
+      //render only if searched for (or if searchbar empty)
       if(this.isSearched(details["Name"])){
         if(subject.startsWith("Humanities-")){
           humanities.push(display);
@@ -114,13 +119,10 @@ class Subject extends Component {
   }
 
   formatParagraph(paragraph) {
-    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
-    // and double all line spacing.
+    //Double all line spacing
     return paragraph.split('\n').join('\n\n');
   }
 }
-
-
 
 const styles = StyleSheet.create({
   title: {

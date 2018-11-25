@@ -21,15 +21,20 @@ export default class FAQs extends Component {
 
   render() {
     let FAQsDisplay = [];
+
     const data = this.props.screenProps;
+    //Render each faq element from data obtained from firebase
     for(let faq in data["FAQ"]){
+      let question = data["FAQ"][faq];
       let display = (
         <Card style={styles.card} key={faq}>
-          <H2 style={styles.H2}>{data["FAQ"][faq]["Question"]}</H2>
-          <Text>{data["FAQ"][faq]["Answer"]}</Text>
+          <H2 style={styles.H2}>{question["Question"]}</H2>
+          <Text>{question["Answer"]}</Text>
         </Card>
       );
-      if(this.isSearched(data["FAQ"][faq]["Question"])){
+
+      //render only if searched for, or if searchbar empty.
+      if(this.isSearched(question["Question"])){
         FAQsDisplay.push(display);
       }
     }

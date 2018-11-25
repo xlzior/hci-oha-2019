@@ -8,10 +8,17 @@ export default class Schedule extends Component {
     searchTerm: ""
   }
 
+  //Different from the others.
+  //Also searches based on individual details like
+  //location, name and time.
   isSearched(name,location,time){
     let search = this.state.searchTerm.toLowerCase();
+    
+    //If searchbar empty
     if(search == "")
       return true;
+
+    //Search for individual details
     if(name.toLowerCase().includes(search)||
     location.toLowerCase().includes(search)||
     String(time).includes(search))
@@ -21,8 +28,9 @@ export default class Schedule extends Component {
   render() {
     let academic = [];
     let performances = [];
-    const data = this.props.screenProps["Schedule"];
 
+    const data = this.props.screenProps["Schedule"];
+    //Render every event present in firebase data
     for(let event in data){
       let details = data[event];
       let time = details["Time"];
@@ -37,6 +45,9 @@ export default class Schedule extends Component {
           </Body>
         </ListItem>
       );
+
+      //Render only if searched for, or if searchbar empty
+      //Arrange under correct sections.
       if(this.isSearched(name,location,time)){
         if(event.startsWith("Performance-")){
           performances.push(display);
@@ -46,7 +57,6 @@ export default class Schedule extends Component {
       }
 
     }
-
 
     return (
       <NavigationBar {...this.props}>

@@ -19,12 +19,16 @@ class ListView extends Component {
     if(name.toLowerCase().includes(search))
       return true;
   }
+
   render() {
     let sportsccas = [];
     let clubs = [];
     let vnas = [];
     let councils = [];
+
     const data = this.props.screenProps["CCA"];
+
+    //Render all the cca elements from the data fetched from firebase
     for(let cca in data){
       let details = data[cca];
       display = (
@@ -47,6 +51,8 @@ class ListView extends Component {
         </ListItem>
       );
 
+      //Push the element under the right section, and display it only
+      //when searched for (or when searchbar is empty)
       if(this.isSearched(details["Name"])){
         if (cca.startsWith("Sports-")){
           sportsccas.push(display);
@@ -139,8 +145,7 @@ class CCAType extends Component {
   }
   
   formatParagraph(paragraph) {
-    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
-    // and double all line spacing.
+    //Double all line spacing
     return paragraph.split('\n').join('\n\n');
   }
 }
