@@ -12,6 +12,7 @@ import About from './components/About';
 import CCA from './components/CCA';
 import Curriculum from './components/Curriculum';
 import FAQs from './components/FAQs';
+import styles from './components/Style';
 
 // Firebase
 import * as firebase from "firebase";
@@ -69,14 +70,14 @@ class HomeScreen extends React.Component {
             resizeMode='contain'
             style={styles.image}
           />
-          <H1 style={styles.H1}>Hwa Chong Institution{"\n"}College Open House 2019</H1>
+          <H1 style={styles.h1HeaderText}>Hwa Chong Institution{"\n"}College Open House 2019</H1>
           <View style={{marginTop: 10, alignItems: 'stretch'}}>
             <Text style={{textAlign: 'center'}}>
               Hello there! Welcome to Hwa Chong's Open House 2019, where you join us in creating this colourful and spectacular masterpiece, one that we call home, as Hwa Chongians.
             </Text>
-            <H2 style={styles.H2}>What would you like to explore?</H2>
+            <H2 style={styles.h2HeaderText}>What would you like to explore?</H2>
             {this.generateButtonGrid(['About', 'Schedule', 'Map', 'Tour Routes','Curriculum', 'CCAs'])}
-            <H2 style={styles.H2}>Still have questions?</H2>
+            <H2 style={styles.h2HeaderText}>Still have questions?</H2>
             <View style={styles.fullWidth}>
               {this.generateButton('FAQs')}
             </View>
@@ -153,36 +154,3 @@ export default class App extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  image: {
-    height: 250,
-    alignSelf: 'center',
-    marginBottom: 10
-  },
-  button: {
-    margin: 5,
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  mainContainer: {
-    margin: 20,
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'center'
-  },
-  H1 : {
-    textAlign: 'center',
-    margin: 10
-  },
-  H2: {
-    width: '100%',
-    textAlign: 'center',
-    marginTop: 30,
-    marginBottom: 10,
-  },
-  fullWidth: {
-    display: 'flex',
-    flexDirection: 'row'
-  }
-})

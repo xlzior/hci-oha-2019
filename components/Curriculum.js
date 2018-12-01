@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 import { Content, Text, H1, H2, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
+import Hyperlink from 'react-native-hyperlink';
 
 import NavigationBar from './NavigationBar';
+import styles from './Style';
 
 class ListView extends Component {
   state = {
@@ -112,7 +114,9 @@ class Subject extends Component {
           <H2 style={styles.title}>Contact</H2>
           <Text style={{marginBottom: 15}}>{contact}</Text>
           <H2 style={styles.title}>Description</H2>
-          <Text>{description}</Text>
+          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
+            <Text>{description}</Text>
+          </Hyperlink>
         </View>
       </Content>
     )
@@ -124,13 +128,6 @@ class Subject extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  title: {
-    marginBottom: 10,
-    marginTop: 10,
-    fontWeight: 'bold'
-  }
-})
 
 export default createStackNavigator({
   Curriculum: {

@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { StyleSheet, Image } from 'react-native';
 import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
+import Hyperlink from 'react-native-hyperlink';
 
 import NavigationBar from './NavigationBar';
+import styles from './Style';
+import FullWidthImage from './FullWidthImage';
 
 class ListView extends Component {
   state = {
@@ -101,8 +104,8 @@ class Location extends Component {
     let photo = getParam('photo', 'fOto');
     let image;
     if(photo != 'none'){
-      image = <Image
-        style={{flex:1, height:150, marginBottom:10}}
+      image = <FullWidthImage
+        style={styles.contentImage}
         source={{uri: photo}}
       />
     }
@@ -112,7 +115,9 @@ class Location extends Component {
         <View style={{marginBottom: 100}}>
           {image}
           <H2 style={styles.title}>Description</H2>
-          <Text>{description}</Text>
+          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
+            <Text>{description}</Text>
+          </Hyperlink>
         </View>
       </Content>
     );
@@ -120,19 +125,10 @@ class Location extends Component {
   }
   
   formatParagraph(paragraph) {
-    //Replace all \\ns with \n, undo (possibly poor) manual double line spacing
-    // and double all line spacing.
+    //Double all line spacing
     return paragraph.split('\n').join('\n\n');
   }
 }
-
-const styles = StyleSheet.create({
-  title: {
-    marginBottom: 10,
-    marginTop: 20,
-    fontWeight: 'bold'
-  }
-})
 
 export default createStackNavigator({
   "Tour Routes": {

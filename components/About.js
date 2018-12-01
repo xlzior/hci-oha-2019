@@ -3,6 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Text, H1, H2, Card } from 'native-base';
 
 import NavigationBar from './NavigationBar';
+import styles from './Style';
 
 export default class About extends Component {
   render() {
@@ -27,13 +28,3 @@ export default class About extends Component {
     )
   }
 }
-
-const styles = StyleSheet.create({
-  card: {
-    padding: 20,
-    marginTop: 5,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10
-  }
-})

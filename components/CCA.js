@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { StyleSheet, Image } from 'react-native';
-import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
+import { Content, View, Text, H1, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
+import Hyperlink from 'react-native-hyperlink';
 
 import NavigationBar from './NavigationBar';
+import styles from './Style';
+import FullWidthImage from './FullWidthImage';
 
 class ListView extends Component {
   state = {
@@ -109,9 +112,6 @@ class CCAType extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('ccaName', 'CCA Name'),
-      description: navigation.getParam('description', 'A cca that exists somewhere'),
-      boothlocation: navigation.getParam('boothLocation', 'Somewhere over the rainbow'),
-      photo: navigation.getParam('photo', 'fOto')
     };
   };
 
@@ -124,8 +124,8 @@ class CCAType extends Component {
     let photo = getParam('photo', 'fOto');
     let image;
     if(photo != 'none'){
-      image = <Image
-        style={{flex:1, height:150, marginBottom:10}}
+      image = <FullWidthImage
+        style={styles.contentImage}
         source={{uri: photo}}
       />
     }
@@ -133,11 +133,14 @@ class CCAType extends Component {
     return (
       <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
+          <H2 style={styles.title}>{ccaName}</H2>
           {image}
           <H2 style={styles.title}>Booth Location</H2>
           <Text style={{marginBottom: 15}}>{boothLocation}</Text>
           <H2 style={styles.title}>Description</H2>
-          <Text>{description}</Text>
+          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
+            <Text>{description}</Text>
+          </Hyperlink>
         </View>
       </Content>
     );
@@ -150,13 +153,6 @@ class CCAType extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  title: {
-    marginBottom: 10,
-    marginTop: 20,
-    fontWeight: 'bold'
-  }
-})
 
 export default createStackNavigator({
   CCA: {

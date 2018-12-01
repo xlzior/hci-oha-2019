@@ -20,8 +20,6 @@ This repository contains the source code for a student-made mobile application f
 
 ### Purpose
 
-Runs your app in development mode.
-
 The application aims to enhance the visitor's experience and understanding of the school by providing direct access to relevant information and useful functions.
 
 #### Authors
@@ -32,4 +30,5 @@ Developers:
 
 Logistics: 
 - Justin
+- Deng Jun
 - Jia Yi

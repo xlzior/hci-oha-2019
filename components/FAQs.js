@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 import { Text, Card, H2, Body, Input, Form, Item } from 'native-base';
 
 import NavigationBar from './NavigationBar';
+import styles from './Style';
+import Hyperlink from 'react-native-hyperlink';
 
 export default class FAQs extends Component {
   state = {
@@ -28,8 +30,10 @@ export default class FAQs extends Component {
       let question = data["FAQ"][faq];
       let display = (
         <Card style={styles.card} key={faq}>
-          <H2 style={styles.H2}>{question["Question"]}</H2>
-          <Text>{question["Answer"]}</Text>
+          <H2 style={styles.cardTitle}>{question["Question"]}</H2>
+          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
+            <Text>{question["Answer"]}</Text>
+          </Hyperlink>
         </Card>
       );
 
@@ -58,17 +62,3 @@ export default class FAQs extends Component {
     )
   }
 }
-
-
-const styles = StyleSheet.create({
-  card: {
-    padding: 20,
-    marginTop: 5,
-    marginBottom: 10,
-    marginLeft: 10,
-    marginRight: 10
-  },
-  H2: {
-    marginBottom: 15
-  }
-})
