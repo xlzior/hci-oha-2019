@@ -22,7 +22,7 @@ export default class MapViewContainer extends Component {
         >
         <Overlay
           image={require('./../images/oha_map.png')}
-          bounds={[[1.326952, 103.804467], [1.323702, 103.808029]]}
+          bounds={[[1.327320, 103.804719], [1.324026, 103.808213]]}
         />
         </MapView>
       </NavigationBar>
