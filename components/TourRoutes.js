@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { Content, View, Text, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
-import { createStackNavigator } from 'react-navigation';
+import { Switch } from 'react-native'
+import { Text, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
 
 import NavigationBar from './NavigationBar';
 import styles from './Style';
 
-class ListView extends Component {
+export default class TourRoutes extends Component {
   state = {
-    searchTerm: ""
+    searchTerm: "",
+    isWetWeather: false
   }
 
   isSearched(name){
@@ -24,29 +25,38 @@ class ListView extends Component {
     
     let display = tourRoutes.map(routeDetails => {
       let { Duration, Name, Route } = routeDetails;
-      let showTourRoute = false;
-      route = Object.values(Route)
+      let route = Object.values(Route)
+      let showTourRoute = false
+      if (this.state.searchTerm == "") showTourRoute = true
+      
       let locations = route.map(location => {
-        // if (this.isSearched(location.Name)) {
+        if (this.isSearched(location.Name)) {
+          showTourRoute = true;
           return (
             <ListItem
-            key={location.Name}
+              key={location.Name}
+              onPress={() => {
+                this.props.navigation.navigate({
+                  routeName: 'Map',
+                  params: { markers: route, highlighted: location }
+                })
+              }}
             >
-            <Left><Text>{location.Name}</Text></Left>
-            <Right><Icon name="arrow-forward" /></Right>
+              <Left><Text>{location.Name}</Text></Left>
+              <Right><Icon name="arrow-forward" /></Right>
             </ListItem>
-            )
-            // showTourRoute = true;
-          // }
-        })
+          )
+        }
+      })
+        
       let header = (
         <ListItem itemDivider key={Name}>
           <Text>{Name} ({Duration})</Text>
         </ListItem>
       )
-      return [header, locations]
-      // if (showTourRoute) return [header, locations]
-      // else return []
+      let routeIsWet = Name.indexOf("Wet") != -1
+      if (showTourRoute && routeIsWet == this.state.isWetWeather) return [header, locations]
+      else return []
     })
 
     return (
@@ -54,9 +64,7 @@ class ListView extends Component {
       <Form>
         <Item>
           <Input
-            onChangeText={searchTerm => {
-              this.setState({searchTerm});
-            }}
+            onChangeText={searchTerm => {this.setState({searchTerm})}}
             value={this.state.searchTerm}
             placeholder="Search"
             returnKeyType="search"
@@ -65,18 +73,18 @@ class ListView extends Component {
         </Item>
       </Form>
         <List>
+          <ListItem>
+            <Left><Text>Wet weather routes</Text></Left>
+            <Right>
+              <Switch
+                value={this.state.isWetWeather}
+                onValueChange={isWetWeather => {this.setState({isWetWeather})}}
+              />
+            </Right>
+          </ListItem>
           {display}
         </List>
       </NavigationBar>
     )
   }
 }
-
-export default createStackNavigator({
-  "Tour Routes": {
-    screen: ListView,
-    navigationOptions: ({
-      header: null
-    })
-  }
-});

@@ -90,8 +90,11 @@ class HomeScreen extends React.Component {
 
 const RootDrawer = createDrawerNavigator({
   Home: HomeScreen,
-  Map: MapView,
   Schedule: Schedule,
+  Map: {
+    screen: MapView,
+    params: { markers: [], highlighted: null }
+  },
   "Tour Routes": TourRoutes,
   About: About,
   Curriculum: Curriculum,

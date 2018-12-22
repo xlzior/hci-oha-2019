@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
-import { Text, View } from 'native-base';
 import MapView, { Marker, Overlay } from 'react-native-maps';
 import Dimensions from 'Dimensions';
-const {width, height} = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 
 import NavigationBar from './NavigationBar';
 
 export default class MapViewContainer extends Component {
   render() {
+    let markersRaw = this.props.navigation.getParam('markers') || []
+    let highlighted = this.props.navigation.getParam('highlighted') || {}
+    let markers = markersRaw.map((location) => {
+      let {Name, Latitude, Longitude} = location
+      let shouldBeHighlighted = JSON.stringify(location) == JSON.stringify(highlighted)
+      return (<Marker
+        key={Name}
+        coordinate={{
+          latitude: Latitude,
+          longitude: Longitude
+        }}
+        pinColor={shouldBeHighlighted ? 'blue' : 'red'}
+        title={Name}
+      />)
+    })
     return (
       <NavigationBar {...this.props}>
         <MapView
@@ -24,10 +38,9 @@ export default class MapViewContainer extends Component {
           image={require('./../images/oha_map.png')}
           bounds={[[1.327320, 103.804719], [1.324026, 103.808213]]}
         />
+        {markers}
         </MapView>
       </NavigationBar>
     )
   }
 }
-
-// bounds={[[1.326952, 103.804467], [1.323702, 103.808029]]}
