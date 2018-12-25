@@ -4,22 +4,16 @@ var fullwidth = Dimensions.get('window').width; //full width
 var fullheight = Dimensions.get('window').height; //full height
 
 const styles = StyleSheet.create({
-  image: { //Image from App.js (Main Image)
-    height: 250,
-    alignSelf: 'center',
-    marginBottom: 10
-  },
-  button: {
-    margin: 5,
-    flex: 1,
-    display: 'flex',
-    justifyContent: 'center'
-  },
   mainContainer: {
     margin: 20,
     flex: 1,
     display: 'flex',
     justifyContent: 'center'
+  },
+  title: {
+    marginBottom: 10,
+    marginTop: 10,
+    fontWeight: 'bold'
   },
   h1HeaderText: {
     textAlign: 'center',
@@ -35,19 +29,20 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row'
   },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  title: {
-    marginBottom: 10,
-    marginTop: 10,
-    fontWeight: 'bold'
+  image: { //Image from App.js (Main Image)
+    height: 250,
+    alignSelf: 'center',
+    marginBottom: 10
   },
   contentImage: {
     flex: 1,
     marginBottom: 10
+  },
+  button: {
+    margin: 5,
+    flex: 1,
+    display: 'flex',
+    justifyContent: 'center'
   },
   card: {
     padding: 20,
@@ -61,7 +56,11 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#0B7DFD',
-    fontWeight: '600'
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })
 

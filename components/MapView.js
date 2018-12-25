@@ -7,21 +7,23 @@ import NavigationBar from './NavigationBar';
 
 export default class MapViewContainer extends Component {
   render() {
+    const {Locations} = this.props.screenProps
     let markersRaw = this.props.navigation.getParam('markers') || []
-    let highlighted = this.props.navigation.getParam('highlighted') || {}
-    let markers = markersRaw.map((location) => {
-      let {Name, Latitude, Longitude} = location
-      let shouldBeHighlighted = JSON.stringify(location) == JSON.stringify(highlighted)
+    let highlighted = this.props.navigation.getParam('highlighted') || ""
+
+    let markers = markersRaw.map((marker) => {
+      const {Latitude, Longitude} = Locations[marker]
       return (<Marker
-        key={Name}
+        key={marker}
         coordinate={{
           latitude: Latitude,
           longitude: Longitude
         }}
-        pinColor={shouldBeHighlighted ? 'blue' : 'red'}
-        title={Name}
+        pinColor={marker == highlighted ? 'blue' : 'red'}
+        title={marker}
       />)
     })
+    
     return (
       <NavigationBar {...this.props}>
         <MapView

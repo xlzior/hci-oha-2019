@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet, Image, AsyncStorage } from 'react-native';
-import { Text, H1, H2, Button, View } from 'native-base';
+import { AsyncStorage } from 'react-native';
+import { Text, View } from 'native-base';
 import { createDrawerNavigator } from 'react-navigation';
 
-import NavigationBar from './components/NavigationBar';
-
+import HomeScreen from './components/HomeScreen'
 import MapView from './components/MapView';
 import Schedule from './components/Schedule';
 import TourRoutes from './components/TourRoutes';
@@ -25,78 +24,15 @@ const firebaseConfig = {
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-// Front-end HomeScreen elements
-class HomeScreen extends React.Component {
-  generateButton(route) {
-    return (
-      <Button light
-        key={route}
-        style={styles.button}
-        onPress={() => this.props.navigation.navigate(route, {test: "Moooo"})}
-      >
-        <Text style={{textAlign: 'center'}}>{route == 'About' ? 'About Hwa Chong' : route}</Text>
-      </Button>
-    )
-  }
-
-  generateButtonGrid(buttons) {
-    let buttonsList = buttons.map(b => this.generateButton(b))
-    let buttonRows = [];
-    for (let i = 0; i < buttonsList.length; i += 2) {
-      buttonRows.push(
-        <View
-          style={{display: 'flex', flexDirection: 'row', flex: 1}}
-          key={i}
-        >
-          {buttonsList.slice(i, i+2)}
-        </View>
-      )
-    }
-    // 2 by 2 grid
-    return (
-      <View style={{display: 'flex'}}>
-        {buttonRows}
-      </View>
-    )
-  }
-
-  render() {
-    return (
-      <NavigationBar {...this.props}>
-        <View style={styles.mainContainer}>
-          <Image
-            source={require('./images/mosaic.png')}
-            resizeMode='contain'
-            style={styles.image}
-          />
-          <H1 style={styles.h1HeaderText}>Hwa Chong Institution{"\n"}College Open House 2019</H1>
-          <View style={{marginTop: 10, alignItems: 'stretch'}}>
-            <Text style={{textAlign: 'center'}}>
-              Hello there! Welcome to Hwa Chong's Open House 2019, where you join us in creating this colourful and spectacular masterpiece, one that we call home, as Hwa Chongians.
-            </Text>
-            <H2 style={styles.h2HeaderText}>What would you like to explore?</H2>
-            {this.generateButtonGrid(['About', 'Schedule', 'Map', 'Tour Routes','Curriculum', 'CCAs'])}
-            <H2 style={styles.h2HeaderText}>Still have questions?</H2>
-            <View style={styles.fullWidth}>
-              {this.generateButton('FAQs')}
-            </View>
-          </View>
-        </View>
-      </NavigationBar>
-    );
-  }
-}
-
-
 const RootDrawer = createDrawerNavigator({
   Home: HomeScreen,
+  About: About,
   Schedule: Schedule,
   Map: {
     screen: MapView,
     params: { markers: [], highlighted: null }
   },
   "Tour Routes": TourRoutes,
-  About: About,
   Curriculum: Curriculum,
   CCAs: CCA,
   FAQs: FAQs,
@@ -120,15 +56,13 @@ export default class App extends React.Component {
   }
 
   listenForItems(datastoreRef) {
-    // let data = {};
     datastoreRef.once("value", datastore => {
       datastore.forEach(element => {
-        // data[element.key] = element.val();
         this.storeAsync(element.key, element.val());
       });
 
       let last_update = JSON.stringify(new Date().toISOString());
-      this.setState({data, last_update})
+      this.setState({last_update})
       AsyncStorage.setItem("last_update", last_update);
     });
     this.setState({ dataLoaded: true })
@@ -153,9 +87,10 @@ export default class App extends React.Component {
     return AsyncStorage.getItem("last_update")
     .then(last_update => {
       this.setState({last_update})
-      
+
+      const DATA_SHELF_LIFE = 4 // days
       let outdated = new Date();
-      outdated.setDate(outdated.getDate() - 4);
+      outdated.setDate(outdated.getDate() - DATA_SHELF_LIFE);
       outdated = JSON.stringify(outdated.toISOString())
 
       // update database only if last update was more than 4 days ago

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, List, ListItem, Body, Input, Form, Item } from 'native-base';
+import { Text, List, ListItem, Body, Input, Form, Item, Right, Icon } from 'native-base';
 
 import NavigationBar from './NavigationBar';
 
@@ -14,9 +14,7 @@ export default class Schedule extends Component {
   isSearched(name,location,time){
     let search = this.state.searchTerm.toLowerCase();
     
-    //If searchbar empty
-    if(search == "")
-      return true;
+    if(search == "") return true; // Search bar empty
 
     //Search for individual details
     if(name.toLowerCase().includes(search)||
@@ -26,36 +24,51 @@ export default class Schedule extends Component {
   }
 
   render() {
-    let academic = [];
-    let performances = [];
+    let schedule = {}
 
     const data = this.props.screenProps["Schedule"];
     //Render every event present in firebase data
     for(let event in data){
-      let details = data[event];
-      let time = details["Time"];
-      let name = details["Name"];
-      let location = details["Location"];
-      let display = (
+      let category = event.split('-')[0]
+      let {Name, Time, Location} = data[event]
+      let eventDisplay = (
         <ListItem
-          key={event}>
+          key={event}
+          onPress={() => this.props.navigation.navigate({
+            'routeName': 'Map',
+            'params': { markers: [Location], highlighted: null }
+          })}
+        >
           <Body>
-            <Text>{name}</Text>
-            <Text note>{time} at {location}</Text>
+            <Text>{Name}</Text>
+            <Text note>{Time} at {Location}</Text>
           </Body>
+          <Right>
+            <Icon name="arrow-forward" />
+          </Right>
         </ListItem>
       );
 
-      //Render only if searched for, or if searchbar empty
-      //Arrange under correct sections.
-      if(this.isSearched(name,location,time)){
-        if(event.startsWith("Performance-")){
-          performances.push(display);
-        }else{
-          academic.push(display);
+      //Push the element under the right section, and display it only when searched for (or when searchbar is empty)
+      if(this.isSearched(Name, Location, Time)){
+        if (schedule.hasOwnProperty(category)) {
+          schedule[category].push(eventDisplay)
+        } else {
+          schedule[category] = [eventDisplay]
         }
       }
+    }
 
+    let listDisplay = []
+    for (let categoryName in schedule) {
+      if (schedule[categoryName].length > 0) {
+        listDisplay.push(
+          <ListItem itemDivider key={categoryName}>
+            <Text>{categoryName}</Text>
+          </ListItem>
+        )
+        listDisplay.push(...schedule[categoryName])
+      }
     }
 
     return (
@@ -73,16 +86,7 @@ export default class Schedule extends Component {
             />
           </Item>
         </Form>
-        <List>
-          <ListItem itemDivider>
-            <Text>Performances</Text>
-          </ListItem>
-          {performances}
-          <ListItem itemDivider>
-            <Text>Academic Talks</Text>
-          </ListItem>
-          {academic}
-        </List>
+        <List>{listDisplay}</List>
       </NavigationBar>
     )
   }

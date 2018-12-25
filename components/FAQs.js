@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
-import { Text, Card, H2, Body, Input, Form, Item } from 'native-base';
+import { Text, Card, H2, Input, Form, Item } from 'native-base';
 
 import NavigationBar from './NavigationBar';
 import styles from './Style';
@@ -11,21 +10,18 @@ export default class FAQs extends Component {
     searchTerm: ""
   }
 
-  isSearched(name){
+  isSearched(question){
     let search = this.state.searchTerm.toLowerCase();
-    //Search bar empty
-    if(search == "")
-      return true;
-
-    if(name.toLowerCase().includes(search))
-      return true;
+    
+    if(search == "") return true; // Search bar empty
+    if(question.toLowerCase().includes(search)) return true;
   }
 
   render() {
     let FAQsDisplay = [];
-
     const data = this.props.screenProps;
-    //Render each faq element from data obtained from firebase
+
+    //Render each FAQ from data obtained from firebase
     for(let faq in data["FAQ"]){
       let question = data["FAQ"][faq];
       let display = (
@@ -44,19 +40,17 @@ export default class FAQs extends Component {
     }
     return (
       <NavigationBar {...this.props}>
-        <Form>
-          <Item>
-            <Input
-              onChangeText={searchTerm => {
-                this.setState({searchTerm});
-              }}
-              value={this.state.searchTerm}
-              placeholder="Search"
-              returnKeyType="search"
-              clearButtonMode="always"
-            />
-          </Item>
-        </Form>
+        <Form><Item>
+          <Input
+            onChangeText={searchTerm => {
+              this.setState({searchTerm});
+            }}
+            value={this.state.searchTerm}
+            placeholder="Search"
+            returnKeyType="search"
+            clearButtonMode="always"
+          />
+        </Item></Form>
         {FAQsDisplay}
       </NavigationBar>
     )

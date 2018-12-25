@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet } from 'react-native';
-import { Content, Text, H1, H2, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
+import { Content, Text, H2, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 import Hyperlink from 'react-native-hyperlink';
 
@@ -14,37 +13,32 @@ class ListView extends Component {
 
   isSearched(name){
     let search = this.state.searchTerm.toLowerCase();
-    //Search bar empty
-    if(search == "")
-      return true;
-
-    if(name.toLowerCase().includes(search))
-      return true;
+    if(search == "") return true; // Search bar empty
+    if(name.toLowerCase().includes(search)) return true;
   }
 
   render() {
-    let humanities = [];
-    let sciences = [];
-
+    let subjects = {}
     const data = this.props.screenProps["Curriculum"];
     
-    //Render each subject from data obtained from firebase
+    // Render each subject from data obtained from firebase
     for(let subject in data){
-      let details = data[subject];
-      display = (
+      let category = subject.split('-')[0]
+      let {Name, Contact, Description} = data[subject]
+      let subjectDisplay = (
         <ListItem
-          key={details["Name"]}
+          key={Name}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'Subject',
             params: { 
-              subjectName: details["Name"],
-              contact: details["Contact"],
-              description: details["Description"]
+              subjectName: Name,
+              contact: Contact,
+              description: Description
             }
           })}
         >
           <Left>
-            <Text>{details["Name"]}</Text>
+            <Text>{Name}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />
@@ -52,42 +46,43 @@ class ListView extends Component {
         </ListItem>
       );
 
-      //Arrange the element under the right section, and
-      //render only if searched for (or if searchbar empty)
-      if(this.isSearched(details["Name"])){
-        if(subject.startsWith("Humanities-")){
-          humanities.push(display);
-        }else if(subject.startsWith("Sciences-")){
-          sciences.push(display);
+      //Push the element under the right section, and display it only when searched for (or when searchbar is empty)
+
+      if(this.isSearched(Name)){
+        if (subjects.hasOwnProperty(category)) {
+          subjects[category].push(subjectDisplay)
+        } else {
+          subjects[category] = [subjectDisplay]
         }
+      }
+    }
+
+    let listDisplay = []
+    for (let categoryName in subjects) {
+      if (subjects[categoryName].length > 0) {
+        listDisplay.push(
+          <ListItem itemDivider key={categoryName}>
+            <Text>{categoryName}</Text>
+          </ListItem>
+        )
+        listDisplay.push(...subjects[categoryName])
       }
     }
 
     return (
       <NavigationBar {...this.props}>
-        <Form>
-          <Item>
-            <Input
-              onChangeText={searchTerm => {
-                this.setState({searchTerm});
-              }}
-              value={this.state.searchTerm}
-              placeholder="Search"
-              returnKeyType="search"
-              clearButtonMode="always"
-            />
-          </Item>
-        </Form>
-        <List>
-          <ListItem itemDivider>
-            <Text>Sciences</Text>
-          </ListItem>
-          {sciences}
-          <ListItem itemDivider>
-            <Text>Humanities</Text>
-          </ListItem>
-          {humanities}
-        </List>
+        <Form><Item>
+          <Input
+            onChangeText={searchTerm => {
+              this.setState({searchTerm});
+            }}
+            value={this.state.searchTerm}
+            placeholder="Search"
+            returnKeyType="search"
+            clearButtonMode="always"
+          />
+        </Item></Form>
+        <List>{listDisplay}</List>
       </NavigationBar>
     )
   }
@@ -114,7 +109,7 @@ class Subject extends Component {
           <H2 style={styles.title}>Contact</H2>
           <Text style={{marginBottom: 15}}>{contact}</Text>
           <H2 style={styles.title}>Description</H2>
-          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
+          <Hyperlink linkDefault={true} linkStyle={styles.link}>
             <Text>{description}</Text>
           </Hyperlink>
         </View>

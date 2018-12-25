@@ -20,8 +20,7 @@ export default class TourRoutes extends Component {
   }
 
   render() {
-    const data = this.props.screenProps["TourRoutes"];
-    let tourRoutes = Object.values(data || {})
+    let tourRoutes = Object.values(this.props.screenProps["TourRoutes"] || {})
     
     let display = tourRoutes.map(routeDetails => {
       let { Duration, Name, Route } = routeDetails;
@@ -30,11 +29,11 @@ export default class TourRoutes extends Component {
       if (this.state.searchTerm == "") showTourRoute = true
       
       let locations = route.map(location => {
-        if (this.isSearched(location.Name)) {
+        if (this.isSearched(location)) {
           showTourRoute = true;
           return (
             <ListItem
-              key={location.Name}
+              key={location}
               onPress={() => {
                 this.props.navigation.navigate({
                   routeName: 'Map',
@@ -42,7 +41,7 @@ export default class TourRoutes extends Component {
                 })
               }}
             >
-              <Left><Text>{location.Name}</Text></Left>
+              <Left><Text>{location}</Text></Left>
               <Right><Icon name="arrow-forward" /></Right>
             </ListItem>
           )

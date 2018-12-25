@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image } from 'react-native';
-import { Content, View, Text, H1, H2, List, ListItem, Left, Right, Icon, Input, Form, Item } from 'native-base';
+import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item, Button } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 import Hyperlink from 'react-native-hyperlink';
 
@@ -15,38 +14,32 @@ class ListView extends Component {
 
   isSearched(name){
     let search = this.state.searchTerm.toLowerCase();
-    //Search bar empty
-    if(search == "")
-      return true;
-
-    if(name.toLowerCase().includes(search))
-      return true;
+    if(search == "") return true; // Search bar empty
+    if(name.toLowerCase().includes(search)) return true;
   }
 
   render() {
-    let sportsccas = [];
-    let clubs = [];
-    let vnas = [];
-    let councils = [];
-
+    let CCAs = {}
     const data = this.props.screenProps["CCA"];
 
-    //Render all the cca elements from the data fetched from firebase
+    // Render each CCA from data obtained from firebase
     for(let cca in data){
-      let details = data[cca];
-      display = (
+      let category = cca.split('-')[0]
+      let {Name, BoothLocation, Description, Photo} = data[cca];
+      let ccaDisplay = (
         <ListItem
-          key={details["Name"]}
+          key={Name}
           button onPress={() => this.props.navigation.navigate({
-            routeName: 'CCAType',
-            params: { ccaName: details["Name"],
-            boothLocation: details["BoothLocation"],
-            description: details["Description"],
-            photo: details["Photo"] }
+            routeName: 'CCADetails',
+            params: { ccaName: Name,
+              boothLocation: BoothLocation,
+              description: Description,
+              photo: Photo
+            }
           })}
         >
           <Left>
-            <Text>{details["Name"]}</Text>
+            <Text>{Name}</Text>
           </Left>
           <Right>
             <Icon name="arrow-forward" />
@@ -54,25 +47,31 @@ class ListView extends Component {
         </ListItem>
       );
 
-      //Push the element under the right section, and display it only
-      //when searched for (or when searchbar is empty)
-      if(this.isSearched(details["Name"])){
-        if (cca.startsWith("Sports-")){
-          sportsccas.push(display);
-        } else if(cca.startsWith("Club-")){
-          clubs.push(display);
-        } else if(cca.startsWith("VNA-")){
-          vnas.push(display);
-        } else if(cca.startsWith("Council-")){
-          councils.push(display);
+      //Push the element under the right section, and display it only when searched for (or when searchbar is empty)
+      if(this.isSearched(Name)){
+        if (CCAs.hasOwnProperty(category)) {
+          CCAs[category].push(ccaDisplay)
+        } else {
+          CCAs[category] = [ccaDisplay]
         }
       }
     }
-    
+
+    let listDisplay = []
+    for (let categoryName in CCAs) {
+      if (CCAs[categoryName].length > 0) {
+        listDisplay.push(
+          <ListItem itemDivider key={categoryName}>
+            <Text>{categoryName}</Text>
+          </ListItem>
+        )
+        listDisplay.push(...CCAs[categoryName])
+      }
+    }
+
     return (
       <NavigationBar {...this.props}>
-      <Form>
-        <Item>
+        <Form><Item>
           <Input
             onChangeText={searchTerm => {
               this.setState({searchTerm});
@@ -82,33 +81,15 @@ class ListView extends Component {
             returnKeyType="search"
             clearButtonMode="always"
           />
-        </Item>
-      </Form>
-        <List>
-          <ListItem itemDivider>
-            <Text>Councils</Text>
-          </ListItem>
-          {councils}
-          <ListItem itemDivider>
-            <Text>Sports CCAs</Text>
-          </ListItem>
-          {sportsccas}
-          <ListItem itemDivider>
-            <Text>Visual and Performing Arts</Text>
-          </ListItem>
-          {vnas}
-          <ListItem itemDivider>
-            <Text>Clubs and Societies</Text>
-          </ListItem>
-          {clubs}
-        </List>
+        </Item></Form>
+        <List>{listDisplay}</List>
       </NavigationBar>
     )
   }
 }
 
 
-class CCAType extends Component {
+class CCADetails extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
       title: navigation.getParam('ccaName', 'CCA Name'),
@@ -137,6 +118,14 @@ class CCAType extends Component {
           {image}
           <H2 style={styles.title}>Booth Location</H2>
           <Text style={{marginBottom: 15}}>{boothLocation}</Text>
+          <Button
+            onPress={() => this.props.navigation.navigate({
+              'routeName': 'Map',
+              'params': { markers: [boothLocation], highlighted: null }
+            })}>
+            <Text>Go to map</Text>
+          </Button>
+
           <H2 style={styles.title}>Description</H2>
           <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
             <Text>{description}</Text>
@@ -161,5 +150,5 @@ export default createStackNavigator({
       header: null
     })
   },
-  CCAType: CCAType,
+  CCADetails: CCADetails,
 });
