@@ -20,7 +20,7 @@ export default class TourRoutes extends Component {
   }
 
   render() {
-    let tourRoutes = Object.values(this.props.screenProps["TourRoutes"] || {})
+    let tourRoutes = Object.values(this.props.screenProps.data["TourRoutes"] || {})
     
     let display = tourRoutes.map(routeDetails => {
       let { Duration, Name, Route } = routeDetails;

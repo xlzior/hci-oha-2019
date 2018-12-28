@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Linking } from 'react-native';
 import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item, Button } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 import Hyperlink from 'react-native-hyperlink';
@@ -20,21 +21,20 @@ class ListView extends Component {
 
   render() {
     let CCAs = {}
-    const data = this.props.screenProps["CCA"];
+    const data = this.props.screenProps.data["CCA"];
 
     // Render each CCA from data obtained from firebase
     for(let cca in data){
       let category = cca.split('-')[0]
-      let {Name, BoothLocation, Description, Photo} = data[cca];
+      let {Name} = data[cca];
       let ccaDisplay = (
         <ListItem
           key={Name}
           button onPress={() => this.props.navigation.navigate({
             routeName: 'CCADetails',
-            params: { ccaName: Name,
-              boothLocation: BoothLocation,
-              description: Description,
-              photo: Photo
+            params: {
+              ccaName: Name,
+              details: data[cca]
             }
           })}
         >
@@ -98,38 +98,51 @@ class CCADetails extends Component {
 
   render() {
     const {getParam} = this.props.navigation;
-    let ccaName = getParam('ccaName', 'CCA Name');
-    let description = getParam('description', 'A cca that exists somewhere');
-    description = this.formatParagraph(description);
-    let boothLocation = getParam('boothLocation', 'Somewhere over the rainbow');
-    let photo = getParam('photo', 'fOto');
-    let image;
-    if(photo != 'none'){
-      image = <FullWidthImage
+    let details = getParam('details');
+    let {Name, BoothLocation, Description, Photo, Photo2, Website} = details
+    Description = this.formatParagraph(Description);
+    let image, image2;
+    if(Photo){
+      image = (<FullWidthImage
         style={styles.contentImage}
-        source={{uri: photo}}
-      />
+        source={{uri: Photo}}
+      />)
+    }
+    if(Photo2){
+      image2 = (<FullWidthImage
+        style={styles.contentImage}
+        source={{uri: Photo2}}
+      />)
     }
 
     return (
       <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
-          <H2 style={styles.title}>{ccaName}</H2>
+          <H2 style={styles.title}>{Name}</H2>
           {image}
-          <H2 style={styles.title}>Booth Location</H2>
-          <Text style={{marginBottom: 15}}>{boothLocation}</Text>
+          {image2}
+          <Text style={styles.margins}>
+            <Text style={{fontWeight: 'bold'}}>Booth Location: </Text>
+            {BoothLocation}
+          </Text>
           <Button
+            style={styles.margins}
             onPress={() => this.props.navigation.navigate({
               'routeName': 'Map',
-              'params': { markers: [boothLocation], highlighted: null }
+              'params': { markers: [BoothLocation], highlighted: null }
             })}>
             <Text>Go to map</Text>
           </Button>
 
-          <H2 style={styles.title}>Description</H2>
-          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
-            <Text>{description}</Text>
+          <Hyperlink linkDefault linkStyle={styles.link}>
+            <Text style={styles.margins}>{Description}</Text>
           </Hyperlink>
+          <Button
+            style={styles.margins}
+            onPress={() => Linking.openURL(Website)}
+          >
+            <Text>Visit CCA website</Text>
+          </Button>
         </View>
       </Content>
     );

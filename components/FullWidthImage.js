@@ -32,7 +32,10 @@ export default class FullWidthImage extends Component {
 
 	render() {
 		return (
-			<View onLayout={e => this._onLayout(e)}>
+			<View
+				onLayout={e => this._onLayout(e)}
+				style={this.props.style}
+			>
 				<Image
 					source={this.props.source}
 					style={{

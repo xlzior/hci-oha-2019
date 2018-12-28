@@ -14,7 +14,7 @@ export default class HomeScreen extends React.Component {
         style={styles.button}
         onPress={() => this.props.navigation.navigate(route)}
       >
-        <Text style={{textAlign: 'center'}}>{route == 'About' ? 'About Hwa Chong' : route}</Text>
+        <Text style={{textAlign: 'center'}}>{route}</Text>
       </Button>
     )
   }
@@ -45,7 +45,7 @@ export default class HomeScreen extends React.Component {
       <NavigationBar {...this.props}>
         <View style={styles.mainContainer}>
           <Image
-            source={require('../images/mosaic.png')}
+            source={require('../images/blank.jpg')}
             resizeMode='contain'
             style={styles.image}
           />
@@ -55,7 +55,7 @@ export default class HomeScreen extends React.Component {
               Hello there! Welcome to Hwa Chong's Open House 2019, where you join us in creating this colourful and spectacular masterpiece, one that we call home, as Hwa Chongians.
             </Text>
             <H2 style={styles.h2HeaderText}>What would you like to explore?</H2>
-            {this.generateButtonGrid(['About', 'Schedule', 'Map', 'Tour Routes','Curriculum', 'CCAs'])}
+            {this.generateButtonGrid(['About Hwa Chong', 'Schedule', 'Map', 'Tour Routes','Curriculum', 'CCAs'])}
             <H2 style={styles.h2HeaderText}>Still have questions?</H2>
             <View style={styles.fullWidth}>
               {this.generateButton('FAQs')}

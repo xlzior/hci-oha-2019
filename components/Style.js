@@ -61,6 +61,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  margins: {
+    marginTop: 10,
+    marginBottom: 5
   }
 })
 

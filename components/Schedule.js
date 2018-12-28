@@ -26,7 +26,7 @@ export default class Schedule extends Component {
   render() {
     let schedule = {}
 
-    const data = this.props.screenProps["Schedule"];
+    const data = this.props.screenProps.data["Schedule"];
     //Render every event present in firebase data
     for(let event in data){
       let category = event.split('-')[0]

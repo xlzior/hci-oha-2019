@@ -11,6 +11,7 @@ import About from './components/About';
 import CCA from './components/CCA';
 import Curriculum from './components/Curriculum';
 import FAQs from './components/FAQs';
+import AboutTheApp from './components/AboutTheApp';
 import styles from './components/Style';
 
 // Firebase
@@ -26,7 +27,7 @@ const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const RootDrawer = createDrawerNavigator({
   Home: HomeScreen,
-  About: About,
+  "About Hwa Chong": About,
   Schedule: Schedule,
   Map: {
     screen: MapView,
@@ -36,6 +37,7 @@ const RootDrawer = createDrawerNavigator({
   Curriculum: Curriculum,
   CCAs: CCA,
   FAQs: FAQs,
+  "About The App": AboutTheApp
 },
 {
   initialRouteName: 'Home'
@@ -50,7 +52,7 @@ export default class App extends React.Component {
       dataLoaded: false,
       data: {},
       asyncStorage: {},
-      last_update: ""
+      lastUpdate: ""
     }
     this.datastoreRef = firebaseApp.database().ref();
   }
@@ -61,10 +63,11 @@ export default class App extends React.Component {
         this.storeAsync(element.key, element.val());
       });
 
-      let last_update = JSON.stringify(new Date().toISOString());
-      this.setState({last_update})
-      AsyncStorage.setItem("last_update", last_update);
+      let lastUpdate = JSON.stringify(new Date().toISOString());
+      this.setState({lastUpdate})
+      AsyncStorage.setItem("lastUpdate", lastUpdate);
     });
+    this.render()
     this.setState({ dataLoaded: true })
   }
 
@@ -84,9 +87,9 @@ export default class App extends React.Component {
 
   fetchAsync() {
     console.log('fetching from async storage...');
-    return AsyncStorage.getItem("last_update")
-    .then(last_update => {
-      this.setState({last_update})
+    return AsyncStorage.getItem("lastUpdate")
+    .then(lastUpdate => {
+      this.setState({lastUpdate})
 
       const DATA_SHELF_LIFE = 4 // days
       let outdated = new Date();
@@ -94,7 +97,7 @@ export default class App extends React.Component {
       outdated = JSON.stringify(outdated.toISOString())
 
       // update database only if last update was more than 4 days ago
-      if (last_update == null || last_update < outdated) this.listenForItems(this.datastoreRef);
+      if (lastUpdate == null || lastUpdate < outdated) this.listenForItems(this.datastoreRef);
       else {
         // if the async storage is still up to date, retrieve data and set it to state
         let asyncStorage = this.state.asyncStorage;
@@ -123,7 +126,7 @@ export default class App extends React.Component {
     })
     .catch(e => {
       this.listenForItems(this.datastoreRef);
-      console.log("Error retrieving last_update from AsyncStorage", e);
+      console.log("Error retrieving lastUpdate from AsyncStorage", e);
     })
   }
 
@@ -149,7 +152,7 @@ export default class App extends React.Component {
   render() {
     let {fontLoaded, dataLoaded} = this.state;
     if (!fontLoaded || !dataLoaded) return <View style={styles.center}><Text>Loading...</Text></View>
-    return <RootDrawer screenProps={data=this.state.asyncStorage}/>;
+    return <RootDrawer screenProps={{data: this.state.asyncStorage, downloadData: () => this.listenForItems(this.datastoreRef)}}/>;
   }
 }
 

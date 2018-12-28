@@ -7,7 +7,7 @@ import NavigationBar from './NavigationBar';
 
 export default class MapViewContainer extends Component {
   render() {
-    const {Locations} = this.props.screenProps
+    const {Locations} = this.props.screenProps.data
     let markersRaw = this.props.navigation.getParam('markers') || []
     let highlighted = this.props.navigation.getParam('highlighted') || ""
 

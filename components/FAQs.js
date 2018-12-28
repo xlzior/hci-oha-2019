@@ -19,22 +19,22 @@ export default class FAQs extends Component {
 
   render() {
     let FAQsDisplay = [];
-    const data = this.props.screenProps;
+    const data = this.props.screenProps.data["FAQ"];
 
     //Render each FAQ from data obtained from firebase
-    for(let faq in data["FAQ"]){
-      let question = data["FAQ"][faq];
+    for(let faq in data){
+      let {Question, Answer} = data[faq];
       let display = (
         <Card style={styles.card} key={faq}>
-          <H2 style={styles.cardTitle}>{question["Question"]}</H2>
-          <Hyperlink linkDefault = {true} linkStyle = {styles.link}>
-            <Text>{question["Answer"]}</Text>
+          <H2 style={styles.cardTitle}>{Question}</H2>
+          <Hyperlink linkDefault linkStyle={styles.link}>
+            <Text>{Answer}</Text>
           </Hyperlink>
         </Card>
       );
 
       //render only if searched for, or if searchbar empty.
-      if(this.isSearched(question["Question"])){
+      if(this.isSearched(Question)){
         FAQsDisplay.push(display);
       }
     }

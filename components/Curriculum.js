@@ -19,7 +19,7 @@ class ListView extends Component {
 
   render() {
     let subjects = {}
-    const data = this.props.screenProps["Curriculum"];
+    const data = this.props.screenProps.data["Curriculum"];
     
     // Render each subject from data obtained from firebase
     for(let subject in data){
@@ -109,7 +109,7 @@ class Subject extends Component {
           <H2 style={styles.title}>Contact</H2>
           <Text style={{marginBottom: 15}}>{contact}</Text>
           <H2 style={styles.title}>Description</H2>
-          <Hyperlink linkDefault={true} linkStyle={styles.link}>
+          <Hyperlink linkDefault linkStyle={styles.link}>
             <Text>{description}</Text>
           </Hyperlink>
         </View>
