@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Card, H2, Input, Form, Item } from 'native-base';
+import { Text, Card, H3, Input, Form, Item } from 'native-base';
 
 import NavigationBar from './NavigationBar';
 import styles from './Style';
@@ -26,7 +26,7 @@ export default class FAQs extends Component {
       let {Question, Answer} = data[faq];
       let display = (
         <Card style={styles.card} key={faq}>
-          <H2 style={styles.cardTitle}>{Question}</H2>
+          <H3 style={styles.h3HeaderText}>{Question}</H3>
           <Hyperlink linkDefault linkStyle={styles.link}>
             <Text>{Answer}</Text>
           </Hyperlink>

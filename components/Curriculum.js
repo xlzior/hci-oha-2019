@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Content, Text, H2, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
+import { Content, Text, H3, List, ListItem, Left, Right, Icon, View, Input, Form, Item } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 import Hyperlink from 'react-native-hyperlink';
 
@@ -105,12 +105,16 @@ class Subject extends Component {
     description = this.formatParagraph(description);
     return (
       <Content style={{padding:20}}>
-        <View style={{marginBottom: 100}}>
-          <H2 style={styles.title}>Contact</H2>
-          <Text style={{marginBottom: 15}}>{contact}</Text>
-          <H2 style={styles.title}>Description</H2>
+        <View style={{marginBottom: 20}}>
+          <H3 style={styles.h3HeaderText}>Description</H3>
           <Hyperlink linkDefault linkStyle={styles.link}>
             <Text>{description}</Text>
+          </Hyperlink>
+        </View>
+        <View style={{marginBottom: 100}}>
+          <H3 style={styles.h3HeaderText}>Contact</H3>
+          <Hyperlink linkDefault linkStyle={styles.link}>
+            <Text style={{marginBottom: 15}}>{contact}</Text>
           </Hyperlink>
         </View>
       </Content>

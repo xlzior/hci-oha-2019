@@ -10,11 +10,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center'
   },
-  title: {
-    marginBottom: 10,
-    marginTop: 10,
-    fontWeight: 'bold'
-  },
   h1HeaderText: {
     textAlign: 'center',
     margin: 10,
@@ -24,6 +19,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 30,
     marginBottom: 10,
+  },
+  h3HeaderText: {
+    marginBottom: 10,
+    fontWeight: 'bold'
   },
   fullWidth: {
     display: 'flex',
@@ -41,18 +40,15 @@ const styles = StyleSheet.create({
   button: {
     margin: 5,
     flex: 1,
+    minHeight: 60,
     display: 'flex',
     justifyContent: 'center'
   },
   card: {
-    padding: 20,
-    marginTop: 5,
-    marginBottom: 10,
+    padding: 15,
+    marginTop: 10,
     marginLeft: 10,
     marginRight: 10
-  },
-  cardTitle: {
-    marginBottom: 20,
   },
   link: {
     color: '#0B7DFD',

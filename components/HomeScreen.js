@@ -8,13 +8,15 @@ import styles from './Style';
 // Front-end HomeScreen elements
 export default class HomeScreen extends React.Component {
   generateButton(route) {
+    let routeName = route
+    if (routeName == 'About Hwa Chong') routeName = 'About\nHwa Chong'
     return (
       <Button light
         key={route}
         style={styles.button}
         onPress={() => this.props.navigation.navigate(route)}
       >
-        <Text style={{textAlign: 'center'}}>{route}</Text>
+        <Text style={{flex: 1, textAlign: 'center', flexWrap: 'wrap'}}>{routeName}</Text>
       </Button>
     )
   }

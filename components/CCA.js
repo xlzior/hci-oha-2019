@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Linking } from 'react-native';
-import { Content, View, Text, H2, List, ListItem, Left, Right, Icon, Input, Form, Item, Button } from 'native-base';
+import { Content, View, Text, H3, List, ListItem, Left, Right, Icon, Input, Form, Item, Button } from 'native-base';
 import { createStackNavigator } from 'react-navigation';
 import Hyperlink from 'react-native-hyperlink';
 
@@ -118,7 +118,7 @@ class CCADetails extends Component {
     return (
       <Content style={{padding:20}}>
         <View style={{marginBottom: 100}}>
-          <H2 style={styles.title}>{Name}</H2>
+          <H3 style={styles.h3HeaderText}>{Name}</H3>
           {image}
           {image2}
           <Text style={styles.margins}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, H1, Card } from 'native-base';
+import { Text, H3, Card } from 'native-base';
 
 import NavigationBar from './NavigationBar';
 import styles from './Style';
@@ -16,7 +16,7 @@ export default class About extends Component {
       let [title, body] = element
       return (
         <Card style={styles.card} key={title}>
-          <H1>{title}</H1>
+          <H3 style={styles.h3HeaderText}>{title}</H3>
           <Text>{body}</Text>
         </Card>
       )
