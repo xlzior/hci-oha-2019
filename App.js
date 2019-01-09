@@ -1,6 +1,7 @@
 import React from 'react';
 import { AsyncStorage } from 'react-native';
 import { Text, View } from 'native-base';
+import { AppLoading } from 'expo';
 import { createDrawerNavigator } from 'react-navigation';
 
 import HomeScreen from './components/HomeScreen'
@@ -48,8 +49,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fontLoaded: false,
-      dataLoaded: false,
+      isReady: false,
       data: {},
       asyncStorage: {},
       lastUpdate: ""
@@ -58,7 +58,7 @@ export default class App extends React.Component {
   }
 
   listenForItems(datastoreRef) {
-    datastoreRef.once("value", datastore => {
+    return datastoreRef.once("value", datastore => {
       datastore.forEach(element => {
         this.storeAsync(element.key, element.val());
       });
@@ -67,8 +67,6 @@ export default class App extends React.Component {
       this.setState({lastUpdate})
       AsyncStorage.setItem("lastUpdate", lastUpdate);
     });
-    this.render()
-    this.setState({ dataLoaded: true })
   }
 
   async storeAsync(key, value) {
@@ -122,7 +120,6 @@ export default class App extends React.Component {
           console.log("Error getting keys from AsyncStorage", e);
         })
       }
-      this.setState({ dataLoaded: true })
     })
     .catch(e => {
       this.listenForItems(this.datastoreRef);
@@ -130,28 +127,38 @@ export default class App extends React.Component {
     })
   }
 
-  async componentDidMount() {
-	  Expo.Font.loadAsync({
-      'Roboto':require('native-base/Fonts/Roboto.ttf'),
+  async fetchResources() {
+    // load font
+	  let fontLoading = Expo.Font.loadAsync({
+      'Roboto': require('native-base/Fonts/Roboto.ttf'),
       'Roboto_medium': require('native-base/Fonts/Roboto_medium.ttf'),
     })
-    .then(() => this.setState({ fontLoaded: true}))
-    // .catch(() => this.setState({ fontLoaded: true}));
 
+    // load data
     let fetchAsyncStorage = this.fetchAsync();
     let timeout = new Promise ((resolve) => {
       setTimeout(resolve, 5000, 'timeout');
     })
-
-    Promise.race([fetchAsyncStorage, timeout])
+    let dataLoading = Promise.race([fetchAsyncStorage, timeout])
     .then(value => {
-      if (value == 'timeout') this.listenForItems(this.datastoreRef)
+      if (value == 'timeout') return this.listenForItems(this.datastoreRef)
     })
+
+    // wait for both to be done
+    return Promise.all([fontLoading, dataLoading])
   }
 
   render() {
-    let {fontLoaded, dataLoaded} = this.state;
-    if (!fontLoaded || !dataLoaded) return <View style={styles.center}><Text>Loading...</Text></View>
+    let {isReady} = this.state;
+    if (!isReady) {
+      return (
+        <AppLoading
+          startAsync={() => this.fetchResources()}
+          onFinish={() => this.setState({ isReady: true })}
+          onError={console.warn}
+        />
+      )
+    }
     return <RootDrawer screenProps={{data: this.state.asyncStorage, downloadData: () => this.listenForItems(this.datastoreRef)}}/>;
   }
 }

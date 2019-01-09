@@ -10,12 +10,13 @@ export default class AboutTheApp extends Component {
       <NavigationBar {...this.props}>
         <View style={{padding: 15}}>
           <Text style={{marginBottom: 20}}>This app was created by students from the Hwa Chong Infocomm and Robotics Society in conjunction with the Students' Council.</Text>
-          <Text>App glitching or data outdated?</Text>
-          <Text>Download the data again:</Text>
+          <Text style={styles.margins}>App glitching or data outdated?</Text>
+          <Text style={styles.margins}>Download the data again:</Text>
           <Button
             onPress={() => this.props.screenProps.downloadData()}
+            style={styles.margins}
           ><Text>Download data</Text></Button>
-          <Text>Last updated: <Moment element={Text} fromNow>{this.props.screenProps.data.lastUpdate}</Moment></Text>
+          <Text style={styles.margins}>Last updated: <Moment element={Text} fromNow>{this.props.screenProps.data.lastUpdate}</Moment></Text>
         </View>
       </NavigationBar>
     )

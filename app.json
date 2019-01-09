@@ -1,10 +1,22 @@
 {
   "expo": {
     "sdkVersion": "27.0.0",
-    "name": "hci-oha-2019",
+    "name": "HCI Open House 2019",
     "slug": "hci-oha-2019",
     "version": "0.1.0",
-    "description": "",
+    "description": "App for Hwa Chong Institution's Open House 2019.",
+    "icon": "./images/icon.png",
+    "ios": {
+      "bundleIdentifier": "com.hci.openhouseapp2019",
+      "buildNumber": "1"
+    },
+    "android": {
+      "package": "com.hci.openhouseapp2019",
+      "permissions": [
+        "ACCESS_FINE_LOCATION"
+      ],
+      "versionCode": 1
+    },
     "splash": {
       "image": "./images/splash.png",
       "resizeMode": "cover"

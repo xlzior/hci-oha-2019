@@ -59,8 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   margins: {
-    marginTop: 10,
-    marginBottom: 5
+    marginBottom: 10
   }
 })
 
