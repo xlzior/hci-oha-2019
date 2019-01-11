@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, Button } from 'native-base'
+import { Text, View, Button, Icon } from 'native-base'
 import Moment from "react-moment"
 import NavigationBar from './NavigationBar'
 import styles from './Style';
@@ -15,7 +15,10 @@ export default class AboutTheApp extends Component {
           <Button
             onPress={() => this.props.screenProps.downloadData()}
             style={styles.margins}
-          ><Text>Download data</Text></Button>
+          >
+            <Icon name="download"/>
+            <Text>Download data</Text>
+          </Button>
           <Text style={styles.margins}>Last updated: <Moment element={Text} fromNow>{this.props.screenProps.data.lastUpdate}</Moment></Text>
         </View>
       </NavigationBar>

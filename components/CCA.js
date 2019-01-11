@@ -30,13 +30,10 @@ class ListView extends Component {
       let ccaDisplay = (
         <ListItem
           key={Name}
-          button onPress={() => this.props.navigation.navigate({
-            routeName: 'CCADetails',
-            params: {
-              ccaName: Name,
-              details: data[cca]
-            }
-          })}
+          button onPress={() => this.props.navigation.push(
+            'CCADetails',
+            { ccaName: Name, details: data[cca] }
+          )}
         >
           <Left>
             <Text>{Name}</Text>

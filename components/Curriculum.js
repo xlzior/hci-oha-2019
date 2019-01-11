@@ -28,14 +28,10 @@ class ListView extends Component {
       let subjectDisplay = (
         <ListItem
           key={Name}
-          button onPress={() => this.props.navigation.navigate({
-            routeName: 'Subject',
-            params: { 
-              subjectName: Name,
-              contact: Contact,
-              description: Description
-            }
-          })}
+          button onPress={() => this.props.navigation.push(
+            'Subject',
+            { subjectName: Name, contact: Contact, description: Description }
+          )}
         >
           <Left>
             <Text>{Name}</Text>

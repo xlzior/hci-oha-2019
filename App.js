@@ -1,6 +1,6 @@
+require('core-js/es6/array')
 import React from 'react';
 import { AsyncStorage } from 'react-native';
-import { Text, View } from 'native-base';
 import { AppLoading } from 'expo';
 import { createDrawerNavigator } from 'react-navigation';
 
@@ -13,7 +13,6 @@ import CCA from './components/CCA';
 import Curriculum from './components/Curriculum';
 import FAQs from './components/FAQs';
 import AboutTheApp from './components/AboutTheApp';
-import styles from './components/Style';
 
 // Firebase
 import * as firebase from "firebase";
@@ -162,4 +161,3 @@ export default class App extends React.Component {
     return <RootDrawer screenProps={{data: this.state.asyncStorage, downloadData: () => this.listenForItems(this.datastoreRef)}}/>;
   }
 }
-

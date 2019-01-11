@@ -3,12 +3,15 @@
     "sdkVersion": "27.0.0",
     "name": "HCI Open House 2019",
     "slug": "hci-oha-2019",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "App for Hwa Chong Institution's Open House 2019.",
     "icon": "./images/icon.png",
     "ios": {
       "bundleIdentifier": "com.hci.openhouseapp2019",
-      "buildNumber": "1"
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app uses location services to display your location in the map for ease of navigation."
+      }
     },
     "android": {
       "package": "com.hci.openhouseapp2019",
