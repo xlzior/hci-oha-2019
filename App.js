@@ -1,8 +1,8 @@
 require('core-js/es6/array')
 import React from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, ScrollView } from 'react-native';
 import { AppLoading } from 'expo';
-import { createDrawerNavigator } from 'react-navigation';
+import { createDrawerNavigator, DrawerItems, SafeAreaView } from 'react-navigation';
 
 import HomeScreen from './components/HomeScreen'
 import MapView from './components/MapView';
@@ -25,6 +25,28 @@ const firebaseConfig = {
 
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
+const CustomDrawerContentComponent = (props) => {
+  let normalOnItemPress = props.onItemPress
+  props = {...props, onItemPress: item => {
+    // intercept original onItemPress to reset the params for the 'Map' route
+    // when Map is accessed via the drawer, params are set to null
+    if (item.route.routeName == 'Map') {
+      item.route.params = {
+        markers: [],
+        highlighted: null
+      }
+    }
+    normalOnItemPress(item)
+  }}
+  return (
+    <ScrollView>
+      <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
+        <DrawerItems {...props}/>
+      </SafeAreaView>
+    </ScrollView>
+  )
+};
+
 const RootDrawer = createDrawerNavigator({
   Home: HomeScreen,
   "About Hwa Chong": About,
@@ -40,7 +62,8 @@ const RootDrawer = createDrawerNavigator({
   "About The App": AboutTheApp
 },
 {
-  initialRouteName: 'Home'
+  initialRouteName: 'Home',
+  contentComponent: CustomDrawerContentComponent
 });
 
 // Back-end loading of data from Firebase
@@ -88,7 +111,7 @@ export default class App extends React.Component {
     .then(lastUpdate => {
       this.setState({lastUpdate})
 
-      const DATA_SHELF_LIFE = 4 // days
+      const DATA_SHELF_LIFE = 1 // days
       let outdated = new Date();
       outdated.setDate(outdated.getDate() - DATA_SHELF_LIFE);
       outdated = JSON.stringify(outdated.toISOString())

@@ -17,8 +17,8 @@ export default class MapViewContainer extends Component {
   }
   render() {
     const {Locations} = this.props.screenProps.data
-    let markersRaw = this.props.navigation.getParam('markers') || []
-    let highlighted = this.props.navigation.getParam('highlighted') || ""
+    let markersRaw = this.props.navigation.getParam('markers', [])
+    let highlighted = this.props.navigation.getParam('highlighted', "")
 
     let markers = markersRaw.map((marker) => {
       const {Latitude, Longitude} = Locations[marker]
