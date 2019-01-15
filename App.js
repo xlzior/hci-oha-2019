@@ -74,20 +74,20 @@ export default class App extends React.Component {
       isReady: false,
       data: {},
       asyncStorage: {},
-      lastUpdate: ""
+      lastPull: ""
     }
     this.datastoreRef = firebaseApp.database().ref();
   }
 
-  listenForItems(datastoreRef) {
+  fetchFromFirebase(datastoreRef) {
     return datastoreRef.once("value", datastore => {
       datastore.forEach(element => {
         this.storeAsync(element.key, element.val());
       });
 
-      let lastUpdate = JSON.stringify(new Date().toISOString());
-      this.setState({lastUpdate})
-      AsyncStorage.setItem("lastUpdate", lastUpdate);
+      let lastPull = new Date().toISOString();
+      this.setState({lastPull})
+      AsyncStorage.setItem("lastPull", lastPull);
     });
   }
 
@@ -96,7 +96,7 @@ export default class App extends React.Component {
     let asyncStorage = this.state.asyncStorage;
     asyncStorage[key] = value;
 
-    this.setState({ asyncStorage });
+    this.setState({asyncStorage});
 
     try {
       await AsyncStorage.setItem(key, JSON.stringify(value));
@@ -106,46 +106,50 @@ export default class App extends React.Component {
   }
 
   fetchAsync() {
-    console.log('fetching from async storage...');
-    return AsyncStorage.getItem("lastUpdate")
-    .then(lastUpdate => {
-      this.setState({lastUpdate})
+    let asyncStorage = JSON.parse(JSON.stringify(this.state.asyncStorage));
 
-      const DATA_SHELF_LIFE = 1 // days
-      let outdated = new Date();
-      outdated.setDate(outdated.getDate() - DATA_SHELF_LIFE);
-      outdated = JSON.stringify(outdated.toISOString())
-
-      // update database only if last update was more than 4 days ago
-      if (lastUpdate == null || lastUpdate < outdated) this.listenForItems(this.datastoreRef);
-      else {
-        // if the async storage is still up to date, retrieve data and set it to state
-        let asyncStorage = this.state.asyncStorage;
-
-        AsyncStorage.getAllKeys()
-        .then(keys => {
-          for (let key of keys) {
-            AsyncStorage.getItem(key)
-            .then(value => {
-              if (value != " ") asyncStorage[key] = JSON.parse(value);
-
-              this.setState({asyncStorage});
-            })
-            .catch(e => {
-              this.listenForItems(this.datastoreRef);
-              console.log(`Error retrieving ${key} from AsyncStorage`, e);
-            })
-          }
+    return AsyncStorage.getAllKeys()
+    .then(keys => {
+      for (let key of keys) {
+        AsyncStorage.getItem(key)
+        .then(value => {
+          if (key != 'lastPull') value = JSON.parse(value)
+          if (value != " ") asyncStorage[key] = value;
         })
         .catch(e => {
-          this.listenForItems(this.datastoreRef);
-          console.log("Error getting keys from AsyncStorage", e);
+          console.log(`Error retrieving ${key} from AsyncStorage`, e);
+          this.fetchFromFirebase(this.datastoreRef);
         })
       }
+      this.setState({asyncStorage})
     })
     .catch(e => {
-      this.listenForItems(this.datastoreRef);
-      console.log("Error retrieving lastUpdate from AsyncStorage", e);
+      console.log("Error getting keys from AsyncStorage", e);
+      this.fetchFromFirebase(this.datastoreRef);
+    })
+  }
+
+  checkAsync() {
+    console.log('checking async storage...');
+    return AsyncStorage.getItem("lastPull")
+    .then(lastPull => {
+      this.setState({lastPull})
+      this.datastoreRef.child('lastUpdate').once("value", lastUpdate => {
+        lastUpdate = lastUpdate.toJSON()
+        // update database only if last pull is older than the last data update
+        if (!lastPull || lastPull < lastUpdate) {
+          console.log("new updates available from Firebase")
+          this.fetchFromFirebase(this.datastoreRef);
+        } else {
+          console.log("asyncStorage is up to date with Firebase")
+          // if the async storage is still up to date, retrieve data and set it to state
+          this.fetchAsync()
+        }
+      });
+    })
+    .catch(e => {
+      console.log("Error retrieving lastPull from AsyncStorage", e);
+      this.fetchFromFirebase(this.datastoreRef);
     })
   }
 
@@ -157,13 +161,13 @@ export default class App extends React.Component {
     })
 
     // load data
-    let fetchAsyncStorage = this.fetchAsync();
+    let checkAsyncStorage = this.checkAsync();
     let timeout = new Promise ((resolve) => {
       setTimeout(resolve, 5000, 'timeout');
     })
-    let dataLoading = Promise.race([fetchAsyncStorage, timeout])
+    let dataLoading = Promise.race([checkAsyncStorage, timeout])
     .then(value => {
-      if (value == 'timeout') return this.listenForItems(this.datastoreRef)
+      if (value == 'timeout') return this.fetchFromFirebase(this.datastoreRef)
     })
 
     // wait for both to be done
@@ -171,8 +175,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    let {isReady} = this.state;
-    if (!isReady) {
+    if (!this.state.isReady) {
       return (
         <AppLoading
           startAsync={() => this.fetchResources()}
@@ -181,6 +184,6 @@ export default class App extends React.Component {
         />
       )
     }
-    return <RootDrawer screenProps={{data: this.state.asyncStorage, downloadData: () => this.listenForItems(this.datastoreRef)}}/>;
+    return <RootDrawer screenProps={{data: this.state.asyncStorage, downloadData: () => this.fetchFromFirebase(this.datastoreRef)}}/>;
   }
 }

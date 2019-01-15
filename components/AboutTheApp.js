@@ -19,7 +19,7 @@ export default class AboutTheApp extends Component {
             <Icon name="download"/>
             <Text>Download data</Text>
           </Button>
-          <Text style={styles.margins}>Last updated: <Moment element={Text} fromNow>{this.props.screenProps.data.lastUpdate}</Moment></Text>
+          <Text style={styles.margins}>Last updated: <Moment element={Text} fromNow>{this.props.screenProps.data.lastPull}</Moment></Text>
         </View>
       </NavigationBar>
     )
